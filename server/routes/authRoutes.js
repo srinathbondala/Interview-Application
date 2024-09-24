@@ -1,5 +1,6 @@
 const express = require('express');
 const { register, login, registerAdmin, loginAdmin } = require('../controllers/authController');
+const { getTopCompanies } = require('../controllers/adminController');
 
 const router = express.Router();
 
@@ -12,13 +13,5 @@ router.post('/admin/register', registerAdmin);
 router.post('/admin/login', loginAdmin);
 
 // Company Details
-exports.topCompany = async (req, res) => {
-    try {
-        const topCompanies = await getTopCompanies();
-        res.status(200).json(topCompanies);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
+router.get('/top-company', getTopCompanies);
 module.exports = router;

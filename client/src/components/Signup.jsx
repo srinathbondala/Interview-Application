@@ -4,13 +4,68 @@ import AddIcon from '@mui/icons-material/Add';
 import Navbar from './Navbar';
 import loginImage from '/imgs/signup2.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Password } from '@mui/icons-material';
 
 const Login = () => {
     
     const [userType, setUserType] = useState('USER');
+    const [formData,setFormData]=useState({
+        username:'',
+        email:'',
+        password:''
+    })
+    const [fNameError,setNameError]=useState("");
+    const [fEmailError,setEmailError]=useState("");
+    const [fPasswordError,setPasswordError]=useState("");
+
     function handleTypeChange(e,newUserType){
         setUserType(newUserType)
     }
+
+    const isStrongPassword = (password) => password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /[!@#$%]/.test(password);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+        
+        if (name === 'username') setNameError('');
+        if (name === 'email') setEmailError('');
+        if (name === 'password') setPasswordError('');
+    };
+
+    const validateForm = () => {
+        let isValid = true;
+
+        if (!formData.username) {
+            setNameError("Name is Required");
+            isValid = false;
+        }
+        if (!formData.email) {
+            setEmailError("Email is Required");
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            setEmailError("Email is not valid");
+            isValid = false;
+        }
+        if (!formData.password) {
+            setPasswordError("Password is Required");
+            isValid = false;
+        }else if (!isStrongPassword(formData.password)) {
+            setPasswordError("Password must be at least 8 characters long and include uppercase, lowercase, digit, and one of @, #, $, %.");
+            isValid = false;
+        }
+
+        return isValid;
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (validateForm()) {
+            console.log('Form submitted successfully:', formData);
+        }
+    };
+
     return (
         <>
             <Grid container sx={{ height: '90vh' }}>
@@ -35,28 +90,37 @@ const Login = () => {
                             <ToggleButton  value="USER" >User</ToggleButton>
                             <ToggleButton value="ADMIN" >Admin</ToggleButton>
                         </ToggleButtonGroup>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <TextField
+                                error={!!fNameError}
                                 label="Username"
                                 name="username"
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
+                                helperText={fNameError}
+                                onChange={handleChange}
                             />
                             <TextField
+                                error={!!fEmailError}
                                 label="Email"
                                 name="email"
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
+                                helperText={fEmailError}
+                                onChange={handleChange}
                             />
                             <TextField
+                                error={!!fPasswordError}
                                 label="Password"
                                 name="password"
                                 type='password'
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
+                                helperText={fPasswordError}
+                                onChange={handleChange}
                             />
                             {userType==="ADMIN"&&<TextField
                                 label="SecretKey"

@@ -27,13 +27,21 @@ const getTopCompanies = async (req, res) => {
     const topCompanies = await Job.aggregate([
       {
         $group: {
-          _id: "$companyName",
+          _id: {
+            jobId: "$_id",
+            companyName: "$companyName",
+            role: "$role",
+            salaryRange: "$salaryRange",
+            description: "$description",
+            technicalSkills: "$eligibleCourses"
+          },
           totalJobs: { $sum: 1 }
         }
       },
       { $sort: { totalJobs: -1 } },
       { $limit: 10 }
     ]);
+    
     res.status(200).json(topCompanies);
   } catch (error) {
     res.status(400).json({ error: error.message });
