@@ -8,9 +8,54 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 const Login = () => {
     
     const [userType, setUserType] = useState('USER');
+    const [formData,setFormData]=useState({
+        email:'',
+        password:''
+    })
+    const [fEmailError,setEmailError]=useState("");
+    const [fPasswordError,setPasswordError]=useState("");
+
     function handleTypeChange(e,newUserType){
         setUserType(newUserType)
     }
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+   
+        if (name === 'email') setEmailError('');
+        if (name === 'password') setPasswordError('');
+    };
+
+    const isStrongPassword = (password) => password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /[!@#$%]/.test(password);
+
+    const validateForm = () => {
+        let isValid = true;
+
+        if (!formData.email) {
+            setEmailError("Email is Required");
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            setEmailError("Email is not valid");
+            isValid = false;
+        }
+        if (!formData.password) {
+            setPasswordError("Password is Required");
+            isValid = false;
+        }else if (!isStrongPassword(formData.password)) {
+            setPasswordError("Password must be at least 8 characters long and include uppercase, lowercase, digit, and one of @, #, $, %.");
+            isValid = false;
+        }
+
+        return isValid;
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (validateForm()) {
+            console.log('User Login was successfully:', formData);
+        }
+    };
     return (
         <>
             <Grid container sx={{ height: '90vh' }}>
@@ -33,7 +78,7 @@ const Login = () => {
                             Welcome Again
                         </Typography>
                         <Typography variant='body1' sx={{ textAlign: 'center', mb: 2 }}>
-                            Please enter your details to login:)
+                            Please enter your details to login:
                         </Typography>
                         <ToggleButtonGroup 
                             exclusive
@@ -44,22 +89,28 @@ const Login = () => {
                             <ToggleButton  value="USER" >User</ToggleButton>
                             <ToggleButton value="ADMIN" >Admin</ToggleButton>
                         </ToggleButtonGroup>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <TextField
+                                error={!!fEmailError}
                                 label="Email"
                                 name="email"
                                 type='email'
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
+                                helperText={fEmailError}
+                                onChange={handleChange}
                             />
                             <TextField
+                                error={!!fPasswordError}
                                 label="Password"
                                 name="password"
                                 type='password'
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
+                                helperText={fPasswordError}
+                                onChange={handleChange}
                             />
                             <Button
                                 type="submit"
