@@ -1,0 +1,38 @@
+body{
+  margin: 0;
+  padding: 0;
+  background-color:  rgb(249, 249, 249) ;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.main-body {
+  flex: 1;
+  min-width: 200px; 
+}
+
+.form-section {
+  flex: 0 0 40%;
+  min-width: 200px; 
+}
+
+@media (max-width: 1000px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .main-body {
+    margin-right: 0; 
+    margin-bottom: 20px;
+  }
+
+  .form-section {
+    flex: 1;
+  }
+}
+
