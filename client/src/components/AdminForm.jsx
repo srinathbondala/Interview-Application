@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, MenuItem, Chip, InputAdornment, IconButton, Grid } from '@mui/material';
+import { TextField, Button, Box, Typography, MenuItem, Chip, InputAdornment,Snackbar, IconButton, Grid } from '@mui/material';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AddIcon from '@mui/icons-material/Add';
 import { AddCircleOutline } from '@mui/icons-material';
@@ -12,8 +12,57 @@ const Form = () => {
     const [salary, setSalary] = useState('');
     const [location, setLocation] = useState('');
     const [skills, setSkills] = useState([]);
+    const [bondDetails,setBondDetails]=useState('');
+    const [selectionProccess,setSelectionProcess]=useState('');
+    const [eligibilityCriteria,setEligibilityCriteria]=useState('');
     const [skillInput, setSkillInput] = useState('');
     const [employmenttype,setEmploymentType]=useState('');
+    const [description, setDescription] = useState('');
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
+    const validateForm = () => {
+        if (!companyName) return 'Company Name is required';
+        if (!role) return 'Role is required';
+        if (!location) return 'Location is required';
+        if (!experience) return 'Experience is required';
+        if (!salary) return 'Salary is required';
+        if (!description) return 'Description is required';
+        if (!bondDetails) return 'bondDetails is required';
+        if (!employmenttype) return 'Employment type is required';
+        if (!eligibilityCriteria) return 'Eligibility Criteria is required';
+        if (!selectionProccess) return 'Selection Proccess is required';
+        if (skills.length === 0) return 'At least one skill is required';
+        return null; 
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const errorMessage = validateForm();
+        if (errorMessage) {
+            setSnackbarMessage(errorMessage);
+            setSnackbarOpen(true);
+            return;
+        }
+
+        console.log({ companyName, role, experience, salary, location, skills });
+        setCompanyName('');
+        setRole('');
+        setExperience('');
+        setSalary('');
+        setLocation('');
+        setSkills([]);
+        setDescription('');
+        setSkillInput('');
+        setBondDetails('');
+        setEmploymentType('');
+        setEligibilityCriteria('');
+        setSelectionProcess('');
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
+    };
 
     const handleAddSkill = () => {
         if (skillInput.trim() && !skills.includes(skillInput)) {
@@ -36,6 +85,7 @@ const Form = () => {
             <Typography variant='h6' sx={{ fontWeight: 'bold', textTransform: 'uppercase', backdropFilter: 'blur', display: "flex", alignItems: "center" }} gutterBottom>
                 New Application <NoteAddIcon />
             </Typography>
+            <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
@@ -69,6 +119,8 @@ const Form = () => {
                         label="Description"
                         name="description"
                         fullWidth
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -76,6 +128,8 @@ const Form = () => {
                         label="Bond Details"
                         name="bonddetails"
                         fullWidth
+                        value={bondDetails}
+                        onChange={(e) => setBondDetails(e.target.value)}
                     />
                 </Grid>
              <Grid item xs={12} >
@@ -156,6 +210,8 @@ const Form = () => {
                         label="Eligibility Criteria"
                         name="eligibilityCriteria"
                         fullWidth
+                        value={eligibilityCriteria}
+                        onChange={(e) => setEligibilityCriteria(e.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -163,6 +219,8 @@ const Form = () => {
                         label="Selection Process"
                         name="selectionprocess"
                         fullWidth
+                        value={selectionProccess}
+                        onChange={(e) => setSelectionProcess(e.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12} >
@@ -177,6 +235,13 @@ const Form = () => {
                     </Button>
                 </Grid>
             </Grid>
+            </form>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                message={snackbarMessage}
+            />
         </Box>
     );
 };

@@ -122,7 +122,7 @@ const SimpleCard = (props) => {
                                         <Grid container gap={'5px'} >
                                         <Button variant="outlined" color="success" sx={{ mr: 1 }}>Accept</Button>
                                         <Button variant="outlined" color="error" sx={{ mr: 1 }}>Reject</Button>
-                                        <Button variant="outlined">View Data</Button>
+                                        <Button variant="outlined" >View Data</Button>
                                         </Grid>
                                     </Paper>
                                 ))}

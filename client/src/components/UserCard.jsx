@@ -9,12 +9,11 @@ import {
     Avatar, 
     Button,  
 } from '@mui/material';
-// import { DeleteOutlined } from '@mui/icons-material';
 
 
 const UserCard = (props) => {
     const navigate = useNavigate();
-    const { jobId, companyName, role, experience, technicalSkills, salaryRange, description,islogged } = props;
+    const { jobId, companyName, role, technicalSkills, salaryRange, description,islogged } = props;
     function handleApply(jobId){
         if(islogged){
             navigate(`/apply/${jobId}`);
@@ -36,11 +35,6 @@ const UserCard = (props) => {
                         {companyName}
                     </Typography>
                 }
-                subheader={
-                    <Typography sx={{ fontWeight: 'bold', color: 'grey', fontSize: '0.9rem' }}>
-                        {role} ({experience} years)
-                    </Typography>
-                }
             />
             <CardContent>
                 <Typography variant='body2' color='grey' sx={{ 
@@ -58,7 +52,15 @@ const UserCard = (props) => {
                     </Typography>
                 )}
                 {description && (
-                    <Typography variant='body2' color='grey' sx={{ mb: 1 }}>
+                    <Typography variant='body2' color='grey' sx={{ 
+                        mb: 1,
+                        maxHeight: '4.5em',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        WebkitLineClamp: 3,
+                     }}>
                         {description}
                     </Typography>
                 )}
