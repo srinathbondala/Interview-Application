@@ -13,6 +13,7 @@ const Form = () => {
     const [location, setLocation] = useState('');
     const [skills, setSkills] = useState([]);
     const [skillInput, setSkillInput] = useState('');
+    const [employmenttype,setEmploymentType]=useState('');
 
     const handleAddSkill = () => {
         if (skillInput.trim() && !skills.includes(skillInput)) {
@@ -29,7 +30,7 @@ const Form = () => {
     // Experience and Salary range options
     const experienceRanges = ['0-1 years', '2-3 years', '3-5 years', '5+ years'];
     const salaryRanges = ['2-3 LPA', '4-5 LPA', '6-9 LPA', '10+ LPA'];
-
+    const employmentType=['Remote','Full Time','Part Time'];
     return (
         <Box sx={{ mx: 'auto', mt: 4, backgroundColor: "#f7faff", borderRadius: 2, padding: 2 }}>
             <Typography variant='h6' sx={{ fontWeight: 'bold', textTransform: 'uppercase', backdropFilter: 'blur', display: "flex", alignItems: "center" }} gutterBottom>
@@ -69,6 +70,29 @@ const Form = () => {
                         name="description"
                         fullWidth
                     />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="Bond Details"
+                        name="bonddetails"
+                        fullWidth
+                    />
+                </Grid>
+             <Grid item xs={12} >
+                    <TextField
+                        select
+                        label="Employment Type"
+                        name="employmenttype"
+                        fullWidth
+                        value={employmenttype}
+                        onChange={(e) => setEmploymentType(e.target.value)}
+                    >
+                        {employmentType.map((range) => (
+                            <MenuItem key={range} value={range}>
+                                {range}
+                            </MenuItem>
+                        ))}
+                    </TextField>
                 </Grid>
                 <Grid item xs={12} >
                     <TextField
@@ -126,6 +150,20 @@ const Form = () => {
                             ))}
                         </Box>
                     </Box>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="Eligibility Criteria"
+                        name="eligibilityCriteria"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="Selection Process"
+                        name="selectionprocess"
+                        fullWidth
+                    />
                 </Grid>
                 <Grid item xs={12} >
                     <Button
