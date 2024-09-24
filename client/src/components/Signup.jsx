@@ -1,37 +1,96 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Grid, ToggleButtonGroup, ToggleButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import Navbar from './Navbar';
-import loginImage from '/imgs/signup2.png';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Password } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import loginImage from '/imgs/signup2.png';
 
 const Login = () => {
-    
+    const navigate = useNavigate();
     const [userType, setUserType] = useState('USER');
-    const [formData,setFormData]=useState({
-        username:'',
-        email:'',
-        password:''
-    })
+    // const [formData,setFormData]=useState({
+    //     username:'',
+    //     email:'',
+    //     password:''
+    // })
+    
+
+    const [formData, setFormData] = useState({
+        username: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        dateOfBirth: '',
+        password: '',
+        position: '',
+    });
     const [fNameError,setNameError]=useState("");
     const [fEmailError,setEmailError]=useState("");
     const [fPasswordError,setPasswordError]=useState("");
-
-    function handleTypeChange(e,newUserType){
-        setUserType(newUserType)
+    function handleTypeChange(e, newUserType) {
+        setUserType(newUserType);
     }
 
-    const isStrongPassword = (password) => password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /[!@#$%]/.test(password);
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
-        
+    function handleChange(e) {
+        const { name, value,password } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
         if (name === 'username') setNameError('');
         if (name === 'email') setEmailError('');
         if (name === 'password') setPasswordError('');
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (validateForm()) {
+            const endpoint = userType === 'USER' ? 'http://localhost:8080/auth/register' : 'http://localhost:8080/auth/admin/register';
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('User created:', data);
+
+            // Clear the form data
+            setFormData({
+                username: '',
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+                address: '',
+                dateOfBirth: '',
+                password: '',
+                position: ''
+            });
+
+            // Navigate based on userType
+            navigate(userType === 'USER' ? '/login' : '/admin', { state: data });
+        } catch (error) {
+            console.error('Error creating user:', error);
+            // Handle errors (e.g., show error message)
+        }
+        }
     };
+
+
+    const isStrongPassword = (password) => password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /[!@#$%]/.test(password);
+
 
     const validateForm = () => {
         let isValid = true;
@@ -58,22 +117,13 @@ const Login = () => {
         return isValid;
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        if (validateForm()) {
-            console.log('Form submitted successfully:', formData);
-        }
-    };
-
     return (
         <>
             <Grid container sx={{ height: '90vh' }}>
-                
                 <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f7faff', padding: 4 }}>
                     <Box sx={{ maxWidth: 400, width: '100%' }}>
-                        <Box sx={{display:'flex',justifyContent: 'center', mb: 2 }} >
-                        <AccountCircleIcon sx={{ fontSize:50}} />
+                        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                            <AccountCircleIcon sx={{ fontSize: 50 }} />
                         </Box>
                         <Typography variant='h4' sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2 }}>
                             Get Started
@@ -81,66 +131,145 @@ const Login = () => {
                         <Typography variant='body1' sx={{ textAlign: 'center', mb: 2 }}>
                             Please enter the details to Register yourself:)
                         </Typography>
-                        <ToggleButtonGroup 
+                        <ToggleButtonGroup
                             exclusive
                             value={userType}
                             onChange={handleTypeChange}
                             sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}
                         >
-                            <ToggleButton  value="USER" >User</ToggleButton>
-                            <ToggleButton value="ADMIN" >Admin</ToggleButton>
+                            <ToggleButton value="USER">User</ToggleButton>
+                            <ToggleButton value="ADMIN">Admin</ToggleButton>
                         </ToggleButtonGroup>
-                        <form onSubmit={handleSubmit}>
-                            <TextField
-                                error={!!fNameError}
+                        <Grid container spacing={2} component="form" onSubmit={handleSubmit}>
+                            <Grid item xs={12} onSubmit={handleSubmit}>
+                                <TextField
+                                    error={!!fNameError}
                                 label="Username"
-                                name="username"
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                                helperText={fNameError}
-                                onChange={handleChange}
+                                    name="username"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="First Name"
+                                    name="firstName"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Last Name"
+                                    name="lastName"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    helperText={fNameError}
+                                
                             />
-                            <TextField
-                                error={!!fEmailError}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    error={!!fEmailError}
                                 label="Email"
-                                name="email"
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                                helperText={fEmailError}
-                                onChange={handleChange}
+                                    name="email"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    helperText={fEmailError}
                             />
-                            <TextField
-                                error={!!fPasswordError}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    error={!!fPasswordError}
                                 label="Password"
-                                name="password"
-                                type='password'
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                                helperText={fPasswordError}
-                                onChange={handleChange}
+                                    name="password"
+                                    type='password'
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    helperText={fPasswordError}
                             />
-                            {userType==="ADMIN"&&<TextField
-                                label="SecretKey"
-                                name="password"
-                                type='password'
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                            />}
-                            
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="success"
-                                fullWidth
-                                sx={{ mt: 2, borderRadius: '20px' }} // Rounded border
-                            >
-                                <AddIcon sx={{ mr: 1 }} /> Submit
-                            </Button>
-                        </form>
+                            </Grid>
+                            {userType === "ADMIN" && (
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Secret Key"
+                                        name="secretKey"
+                                        type='password'
+                                        fullWidth
+                                        variant="outlined"
+                                        value={formData.secretKey}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                            )}
+                            {userType === "ADMIN" && (
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Position"
+                                        name="position" 
+                                        fullWidth
+                                        variant="outlined"
+                                        value={formData.position}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                            )}
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Phone"
+                                    name="phone"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Address"
+                                    name="address"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            {userType === "USER" && ( 
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Date of Birth"
+                                        name="dateOfBirth"
+                                        type="date"
+                                        fullWidth
+                                        variant="outlined"
+                                        InputLabelProps={{ shrink: true }} 
+                                        value={formData.dateOfBirth}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                            )}
+                            <Grid item xs={12}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="success"
+                                    fullWidth
+                                    sx={{ mt: 2, borderRadius: '20px' }} 
+                                >
+                                    Register <PersonAddAlt1Icon sx={{ ml: 1 }} />
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Box>
                 </Grid>
                 <Grid item xs={12} md={6}>

@@ -2,7 +2,7 @@ const User = require('../models/user_schema');
 const jwt = require('jsonwebtoken');
 const Education = require('../models/acadamic_details_schema');
 const ProfessionalDetails = require('../models/professional_details_schema');
-
+const Job = require('../models/company_details_schems');
 //Get user profile
 exports.getProfile = async (req, res) => {
     try {

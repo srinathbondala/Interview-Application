@@ -32,7 +32,7 @@ const SimpleCard = (props) => {
     };
 
     return (
-        <Card elevation={2} sx={{ borderRadius: 2, transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2 }}>
+        <Card elevation={2} sx={{ borderRadius: 2,background:`url('/imgs/cardBg.png')`,backgroundPosition:'center',backgroundSize:'cover', transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2,display:'flex',flexDirection:'column' }}>
             <CardHeader
                 avatar={
                     <Avatar sx={{ bgcolor: 'primary.main', color: 'white' }}>

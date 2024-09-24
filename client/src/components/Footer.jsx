@@ -5,9 +5,11 @@ function Footer(){
           sx={{
             backgroundColor: '#333',
             color: 'white',
-            py: 3,
-            mt: 5,
             textAlign: 'center',
+            marginTop:'1.5rem',
+            p:2,
+            flexGrow: '1',
+            width: '100%',
           }}
         >
           <Typography variant="body1">© 2024 Interview Track. All rights reserved.</Typography>

@@ -6,7 +6,7 @@ function MainPage() {
     <Box>
       <Box
         sx={{
-          backgroundImage: 'url("https://th.bing.com/th/id/OIP.hJ84-xZdQ0HANnv5FnZ1VgHaD4?w=321&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7")',
+          backgroundImage: 'url(/imgs/MainPage.png)',
           height: '90vh',
           backgroundSize: 'cover',
           display: 'flex',
@@ -63,7 +63,7 @@ function MainPage() {
           </Typography>
           <Container>
             <Button variant="contained" sx={{ mt: 3, mr: 1 }}><a className="nav-link" href="/login">LOGIN</a></Button>
-            <Button variant="contained" sx={{ mt: 3 }}>Sign Up</Button>
+            <Button variant="contained" sx={{ mt: 3 }}><a className="nav-link" href="/signup">SIGNUP</a></Button>
           </Container>
         </Box>
       </Box>

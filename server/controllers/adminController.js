@@ -33,7 +33,7 @@ const getTopCompanies = async (req, res) => {
             role: "$role",
             salaryRange: "$salaryRange",
             description: "$description",
-            technicalSkills: "$eligibleCourses"
+            technicalSkills: "$technicalSkills"
           },
           totalJobs: { $sum: 1 }
         }
