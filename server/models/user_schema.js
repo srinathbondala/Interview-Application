@@ -43,9 +43,12 @@ const userSchema = new Schema({
     },
     acadamicDetailsKey: {
         type: String,
-        required: true
-    }
-    
+        default: ''
+    },
+    profactionalDetailsKey: {
+        type: String,
+        default: ''
+    },
 });
 
 module.exports = mongoose.model('User', userSchema);

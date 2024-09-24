@@ -12,6 +12,6 @@ router.post('/login', login);
 router.post('/admin/register', registerAdmin);
 router.post('/admin/login', loginAdmin);
 
-// Company Details
+// Company Detailse
 router.get('/top-company', getTopCompanies);
 module.exports = router;
