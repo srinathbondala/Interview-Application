@@ -42,7 +42,7 @@ const Form = () => {
         return null;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const errorMessage = validateForm();
         if (errorMessage) {
@@ -50,7 +50,20 @@ const Form = () => {
             setSnackbarOpen(true);
             return;
         }
+        const response = await fetch('http://localhost:8080/admin/add-job', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+            },
+            body: JSON.stringify(formData),
+        });
 
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
         console.log(formData);
 
         // Clear form data
@@ -264,6 +277,7 @@ const Form = () => {
                             color="primary"
                             fullWidth
                             sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}
+                            // onClick={addNewCompany}
                         >
                             <AddIcon /> ADD
                         </Button>

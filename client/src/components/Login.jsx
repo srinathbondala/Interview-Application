@@ -4,16 +4,16 @@ import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from 'react-router-dom';
 import loginImage from '/imgs/login2.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import useToken from '../useToken';
 
 const Login = () => {
     const navigate = useNavigate();
     const [userType, setUserType] = useState('USER');
-
-
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     })
+    const { saveToken } = useToken();
     const [fEmailError, setEmailError] = useState("");
     const [fPasswordError, setPasswordError] = useState("");
 
@@ -53,7 +53,8 @@ const Login = () => {
                 console.log('Login successful:', data)
 
                 localStorage.setItem('jwtToken', data.token);
-                localStorage.setItem('userType', data.user.role);
+                saveToken(data.token);
+                localStorage.setItem('userType', userType==="USER"?"user":"admin");
                 // Clear form data
                 setFormData({ email: '', password: '' });
 

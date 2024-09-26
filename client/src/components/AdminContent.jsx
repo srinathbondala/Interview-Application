@@ -3,6 +3,7 @@ import SimpleCard from "./AdminCard";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 import Form from "./AdminForm"; // Import your form component
 
 // const data = [
@@ -70,6 +71,11 @@ const MainBody = () => {
     }
     const [data,setData]=useState([]);
     useEffect(() => {
+        const token = Cookies.get('token');
+        if (!token) {
+            alert('authenticated id have expired. Please login again');
+            navigation('/login');
+        }
         axios.get('http://localhost:8080/auth/top-company').then(
             response => {
                 setData(response.data);

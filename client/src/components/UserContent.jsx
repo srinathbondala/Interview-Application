@@ -43,7 +43,7 @@ const UserContent = ({islogged}) => {
                 </Box>
                 <Container sx={{display:'flex',alignItems:'center',justifyContent:'center'}}>
                 {islogged ? (
-                        <Button variant="outlined" sx={{ mt: 3, mr: 1 }} component="a" href="/">
+                        <Button variant="outlined" sx={{ mt: 3, mr: 1 }} component="a" href="/all">
                             View all companies
                         </Button>
                     ) : (
@@ -58,3 +58,4 @@ const UserContent = ({islogged}) => {
 };
 
 export default UserContent;
+

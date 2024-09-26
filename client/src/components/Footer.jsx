@@ -6,10 +6,9 @@ function Footer(){
             backgroundColor: '#333',
             color: 'white',
             textAlign: 'center',
-            marginTop:'1.5rem',
-            p:2,
-            flexGrow: '1',
-            width: '100%',
+            // marginTop:'1.5rem',
+            padding: '1rem',
+            width: '100%',           
           }}
         >
           <Typography variant="body1">© 2024 Interview Track. All rights reserved.</Typography>

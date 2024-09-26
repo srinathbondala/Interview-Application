@@ -1,8 +1,37 @@
-body{
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+/* Apply this to your global CSS or body tag */
+body {
+  /* background: url('/imgs/temp.jpg'); */
+  /* A clean, professional gradient */
+  background-position: center;
+  background-size: contain;
   margin: 0;
   padding: 0;
-  background-color:  rgb(249, 249, 249) ;
+  box-sizing: border-box;
 }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#root,
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+* {
+  font-family: Outfit !important
+}
+
 .container {
   display: flex;
   justify-content: space-between;
@@ -13,12 +42,12 @@ body{
 
 .main-body {
   flex: 1;
-  min-width: 200px; 
+  min-width: 200px;
 }
 
 .form-section {
   flex: 0 0 40%;
-  min-width: 200px; 
+  min-width: 200px;
 }
 
 @media (max-width: 1000px) {
@@ -27,7 +56,7 @@ body{
   }
 
   .main-body {
-    margin-right: 0; 
+    margin-right: 0;
     margin-bottom: 20px;
   }
 
@@ -35,4 +64,3 @@ body{
     flex: 1;
   }
 }
-

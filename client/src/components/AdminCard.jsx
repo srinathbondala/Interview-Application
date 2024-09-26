@@ -88,7 +88,6 @@ const SimpleCard = (props) => {
                 fullWidth
                 PaperProps={{
                     sx: {
-                        top:'4%',
                         backgroundColor:'#f4f4f4',
                         borderRadius: 4,
                         boxShadow: 4,
@@ -134,7 +133,7 @@ const SimpleCard = (props) => {
                             <Typography variant="h6" gutterBottom sx={{fontWeight: 'bold', textAlign: 'center',color:'white',backgroundColor:'#8e8e8e',borderRadius:2, pb: 1,padding: '8px 16px',boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
                                 In Progress
                             </Typography>
-                            <Box sx={{ height: '60vh', overflowY: 'auto', padding: '8px', borderRadius: '8px', backgroundColor: '#fff' }}>
+                            <Box sx={{ height: '60vh', overflowY: 'auto', padding: '8px', borderRadius: '8px'}}>
                                 {applicationsData.slice(0, 6).map((app, index) => (
                                     <Paper elevation={3} key={index} sx={{ padding: 2, mb: 2, borderRadius: 2 }}>
                                         <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{app.name}</Typography>
@@ -155,7 +154,7 @@ const SimpleCard = (props) => {
                             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center',color:'white',backgroundColor:'#d93939',borderRadius:2, pb: 1,padding: '8px 16px',boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
                                 Rejected
                             </Typography>
-                            <Box sx={{ height: '60vh', overflowY: 'auto', padding: '8px', borderRadius: '8px', backgroundColor: '#fff' }}>
+                            <Box sx={{ height: '60vh', overflowY: 'auto', padding: '8px', borderRadius: '8px'}}>
                                 {applicationsData.slice(0, 6).map((app, index) => (
                                     <Paper elevation={3} key={index} sx={{ padding: 2, mb: 2, borderRadius: 2 }}>
                                         <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{app.name}</Typography>

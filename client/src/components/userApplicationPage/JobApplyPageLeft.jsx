@@ -14,7 +14,7 @@ function JobApplyPageLeft() {
         setLoading(true);
         const response = await fetch(`http://localhost:8080/user/get-by-id/${jobId}`, {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWYwZWZkMTI4MTM4YmNiMjMwMDEzOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI3MTY3MDgxLCJleHAiOjE3MjcxODE0ODF9.XkoRKwdJYhmAEPYvHVMXXs0lrenBX9-turRfz15-R70',
+            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
           },
         });
         if (!response.ok) {

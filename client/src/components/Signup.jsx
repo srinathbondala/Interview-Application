@@ -119,7 +119,8 @@ const Login = () => {
 
     return (
         <>
-            <Grid container sx={{ height: '90vh' }}>
+            <Grid container sx={{ minHeight: '80vh',  /* Ensures the form takes enough space */
+        paddingBottom: '2rem'}}>
                 <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f7faff', padding: 4 }}>
                     <Box sx={{ maxWidth: 400, width: '100%' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
