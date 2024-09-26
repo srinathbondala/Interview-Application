@@ -1,4 +1,5 @@
 const Job = require('../models/company_details_schems');
+const JobApplication = require('../models/job_application_schema');
 
 // Controller to add a new job
 const addJob = async (req, res) => {
@@ -11,6 +12,16 @@ const addJob = async (req, res) => {
   }
 };
 
+//controller to delete a job
+const deleteJob = async (req, res) => {
+  try {
+    const deletedJob = await Job.findByIdAndDelete(req.params.id);
+    res.status(200).json(deletedJob);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+//only prefered when job is not applied by any user
 // Controller to get all jobs
 const getallJobs = async (req, res) => {
   try {
@@ -48,4 +59,40 @@ const getTopCompanies = async (req, res) => {
   }
 };
 
-module.exports = { addJob, getallJobs, getTopCompanies };
+// Controller to get all applied jobs
+
+const getAppliedJobs = async (req, res) => {
+  try {
+    const allJobs = await JobApplication.find();
+    res.status(200).json(allJobs);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Controller to get all new applications
+const getNewApplications = async (req, res) => {
+  try {
+    const allJobs = await JobApplication.find({ status: 'Applied' });
+    res.status(200).json(allJobs);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+//get active jobs
+const getActiveJobs = async (req, res) => {
+  try {
+      const allJobs = await Job.find({
+          registrationEnded: { 
+              $gte: new Date().toISOString().split('T')[0]
+          }
+      });
+      res.status(200).json(allJobs);
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+  
+};
+
+module.exports = { addJob, getallJobs, getTopCompanies, getAppliedJobs,deleteJob ,getNewApplications, getActiveJobs};

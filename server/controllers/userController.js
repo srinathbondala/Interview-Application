@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const Education = require('../models/acadamic_details_schema');
 const ProfessionalDetails = require('../models/professional_details_schema');
 const Job = require('../models/company_details_schems');
+const JobApplication = require('../models/job_application_schema');
 //Get user profile
 exports.getProfile = async (req, res) => {
     try {
@@ -62,11 +63,16 @@ exports.updateProfile = async (req, res) => {
 // Get all Jobs
 exports.getallJobs = async (req, res) => {
     try {
-        const allJobs = await Job.find();
+        const allJobs = await Job.find({
+            registrationEnded: { 
+                $gte: new Date().toISOString().split('T')[0]
+            }
+        });
         res.status(200).json(allJobs);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
+    
 };
 
 // Get Job by ID
@@ -80,5 +86,34 @@ exports.getJobById = async (req, res) => {
         res.status(200).json(job);
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+};
+
+// Apply for a job
+exports.applyJob = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+        const { jobId } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({ error: 'Job not found' });
+        }
+        const jobApplication = new JobApplication({ userId, jobId});
+        const savedJobApplication = await jobApplication.save();
+        if(!user.jobApplicationKeys) {
+            user.jobApplicationKeys = [];
+        }
+        user.jobApplicationKeys.push(savedJobApplication._id);
+        await user.save();
+        res.status(200).json({message:"success", data:savedJobApplication});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+        console.error('Error applying for the job:', error);
     }
 };

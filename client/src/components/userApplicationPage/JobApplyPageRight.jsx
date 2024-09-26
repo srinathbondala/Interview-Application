@@ -3,13 +3,15 @@ import ShowProfileCompletion from './ShowProfileCompletion';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 function JobApplyPageRight({jobId}) {
+  const navigation = useNavigate();
   const areAllFieldsValid = true;
   useEffect(() => {
     const token = Cookies.get('token');
     if (!token) {
         alert('authenticated id have expired. Please login again');
-        // navigation('/login');
+        navigation('/login');
     }
 }, []);
   const applyJobByUser =async ()=>{
@@ -28,7 +30,7 @@ function JobApplyPageRight({jobId}) {
         const response = await axios.post('http://localhost:8080/user/apply-job', { jobId }, config);
         console.log('Job applied successfully:', response.data);
         alert(response.data.message);
-
+        navigation(-1);
         return response.data;
       } catch (error) {
           console.log(error);

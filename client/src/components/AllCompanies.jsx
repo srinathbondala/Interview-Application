@@ -6,6 +6,10 @@ import axios from "axios";
 const UserContent = ({islogged}) => {
     const [data,setData]=useState([]);
     useEffect(() => {
+        // axios.get('http://localhost:8080/user/get-all-jobs',{
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+        //     }
         axios.get('http://localhost:8080/auth/top-company').then(//still end point is not defined for demo i used this end point
             response => {
                 setData(response.data);

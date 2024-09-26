@@ -42,13 +42,17 @@ const userSchema = new Schema({
         default: 'user'
     },
     acadamicDetailsKey: {
-        type: String,
-        default: ''
+        type: Schema.Types.ObjectId,
+        default: null
     },
     profactionalDetailsKey: {
-        type: String,
-        default: ''
+        type: Schema.Types.ObjectId,
+        default: null
     },
+    jobApplicationKeys: {
+        type: [Schema.Types.ObjectId],
+        default: []
+    }
 });
 
 module.exports = mongoose.model('User', userSchema);
