@@ -18,11 +18,18 @@ const useToken = () => {
         Cookies.remove('token');
         setToken(null);
     };
+    const checkToken = () =>{
+        if(token!== null){
+            return true;
+        }
+        return false;
+    }
 
     return {
         token,
         saveToken,
         removeToken,
+        checkToken,
     };
 };
 

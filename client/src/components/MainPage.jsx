@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { gsap } from 'gsap';
 import { AppBar, Toolbar, Typography, Button, Box, Container, Grid, Paper } from '@mui/material';
+import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react'
 
 function MainPage() {
   useGSAP(() => {
     gsap.fromTo('#animated-box', { y: '100vh', opacity: 0 },
       { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out' });
-    gsap.fromTo('.btn', { y: '100', opacity: 0 },
+    gsap.fromTo('.btnn', { y: '100', opacity: 0 },
       { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out', stagger: 0.25, delay: 1 });
   })
 
@@ -72,10 +72,10 @@ function MainPage() {
             "Where Talent Meets the Industry"
           </Typography>
           <Container>
-            <Button className="btn" variant="contained" sx={{ mt: 3, mr: 1, '&:hover': { bgcolor: 'primary.main' } }}>
+            <Button className="btnn" variant="contained" sx={{ mt: 3, mr: 1, '&:hover': { bgcolor: 'primary.main' } }}>
               <a className="nav-link" href="/login">LOGIN</a>
             </Button>
-            <Button className="btn" variant="contained" sx={{ mt: 3, '&:hover': { bgcolor: 'primary.main' } }}>
+            <Button className="btnn" variant="contained" sx={{ mt: 3, '&:hover': { bgcolor: 'primary.main' } }}>
               <a className="nav-link" href="/signup">SIGNUP</a>
             </Button>
           </Container>

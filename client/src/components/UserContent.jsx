@@ -2,8 +2,13 @@ import { Paper, Grid, Container, Box,Pagination,Typography, Button } from "@mui/
 import UserCard from "./UserCard";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react'
 const UserContent = ({islogged}) => {
+    useGSAP(() => {
+        gsap.fromTo('.card', { y: '440', opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.25, delay: 1 });
+      })
     const [data,setData]=useState([]);
     useEffect(() => {
         axios.get('http://localhost:8080/auth/top-company').then(
@@ -13,8 +18,7 @@ const UserContent = ({islogged}) => {
         ).catch(error => {
             console.error(error);
         })
-    }, [])
-    console.log(data);
+    }, []);
     return (
         <>
             <Typography variant="h4" align="center">
@@ -32,7 +36,7 @@ const UserContent = ({islogged}) => {
                     {/* Cards Section */}
                     <Grid container spacing={2}>
                         {data.map((item, index) => (
-                            <Grid item xs={12} sm={6} md={6} key={index}>
+                            <Grid item xs={12} sm={6} md={6} key={index} >
                                 {/* <Paper elevation={3}> */}
                                     <UserCard {...item._id} islogged={islogged} />
                                 {/* </Paper> */}

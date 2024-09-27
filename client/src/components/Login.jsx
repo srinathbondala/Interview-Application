@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Grid, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { TextField, Button, Box, Typography, Alert, Grid,Link, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from 'react-router-dom';
 import loginImage from '/imgs/login2.png';
@@ -8,28 +8,30 @@ import useToken from '../useToken';
 
 const Login = () => {
     const navigate = useNavigate();
+    const [alert, setAlert] = useState(null); 
     const [userType, setUserType] = useState('USER');
     const [formData, setFormData] = useState({
         email: '',
         password: ''
-    })
+    });
     const { saveToken } = useToken();
     const [fEmailError, setEmailError] = useState("");
     const [fPasswordError, setPasswordError] = useState("");
 
-    function handleTypeChange(e, newUserType) {
-        setUserType(newUserType);
-        setFormData({ email: '', password: '' });
+    const handleTypeChange = (e, newUserType) => {
+        if (newUserType !== null) { 
+            setUserType(newUserType);
+            setFormData({ email: '', password: '' });
+        }
+    };
 
-    }
-
-    function handleChange(e) {
+    const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
 
         if (name === 'email') setEmailError('');
         if (name === 'password') setPasswordError('');
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,22 +53,27 @@ const Login = () => {
 
                 const data = await response.json();
                 console.log('Login successful:', data)
-
+                console.log(data);
                 localStorage.setItem('jwtToken', data.token);
+                localStorage.setItem('Details',JSON.stringify(data.user));
                 saveToken(data.token);
                 localStorage.setItem('userType', userType==="USER"?"user":"admin");
+                localStorage.setItem('details', JSON.stringify(data.user));
                 // Clear form data
                 setFormData({ email: '', password: '' });
+                setAlert(null); 
 
-                // Navigate based on userType
+               
                 navigate(userType === 'USER' ? '/user' : '/admin', { state: data });
             } catch (error) {
+                setAlert({ message: 'Please check your password (or) Sign Up before login', severity: 'error' });
                 console.error('Error logging in:', error);
-                // Handle errors (e.g., show error message)
             }
         }
     };
-    const isStrongPassword = (password) => password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /[!@#$%]/.test(password);
+
+    const isStrongPassword = (password) =>
+        password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /[!@#$%]/.test(password);
 
     const validateForm = () => {
         let isValid = true;
@@ -90,9 +97,11 @@ const Login = () => {
     };
     return (
         <>
-            <Grid container sx={{ height: '90vh' }}>
-                <Grid item xs={12} md={6}>
-                    <Box
+            {alert && <Alert variant="filled" severity={alert.severity}>{alert.message}</Alert>}
+          
+                <Grid container sx={{ height: '90vh' }}>
+                       <Grid item xs={12} md={6}>
+                      <Box
                         sx={{
                             height: '100%',
                             backgroundImage: `url(${loginImage})`,
@@ -158,6 +167,9 @@ const Login = () => {
                                 Login <LoginIcon sx={{ ml: 1 }} />
                             </Button>
                         </form>
+                        <Typography variant='body1' sx={{ mt:2 }}>
+                           Sign Up Here: <Link href="/signup">Click Here</Link>
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>

@@ -1,5 +1,8 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react'
+import useToken from '../useToken';
 import { 
     Card, 
     CardHeader, 
@@ -12,10 +15,15 @@ import {
 
 
 const UserCard = (props) => {
+    const { checkToken } = useToken();
+    useGSAP(() => {
+        gsap.fromTo('.card', { y: '200', opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease:'back.in', stagger: 0.25, delay: 0 });
+      })
     const navigate = useNavigate();
     const { jobId, companyName, role, technicalSkills, salaryRange, description,islogged } = props;
     function handleApply(jobId){
-        if(islogged){
+        if(checkToken()){
             navigate(`/apply/${jobId}`);
         }
         else{
@@ -23,7 +31,7 @@ const UserCard = (props) => {
         }
     }
     return (
-        <Card elevation={2} sx={{ borderRadius: 2,background:`url('/imgs/cardBg.png')`,backgroundPosition:'center',backgroundSize:'cover', transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2,display:'flex',flexDirection:'column' }}>
+        <Card className='card' elevation={2} sx={{ borderRadius: 2,background:`url('/imgs/cardBg.png')`,backgroundPosition:'center',backgroundSize:'cover', transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2,display:'flex',flexDirection:'column' }}>
             <CardHeader
                 avatar={
                     <Avatar sx={{ bgcolor: 'primary.main', color: 'white' }}>

@@ -12,9 +12,21 @@ import UserBody from './components/userBody';
 import JobApplyPage from './components/userApplicationPage/JobApplyPage';
 import AllCompanies from './components/AllCompanies';
 import UserApplied from './components/userApplied';
-
+import { useState, useEffect } from 'react';
+import useToken from './useToken';
+import UserForm from './components/UserForm';
 
 function App() {
+  const { token } = useToken();
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const userDetails = localStorage.getItem('userType');
+    if (userDetails) {
+      setRole(userDetails);
+    }
+  }, [token]);
+
   return (
     <div className="app-container">
       <BrowserRouter>
@@ -29,8 +41,6 @@ function App() {
                 </div>
               </>
             } />
-            <Route path="/userApplied" element={<UserApplied />}/>
-            <Route path="/all" element={<AllCompanies/>}/>
             <Route path="/admin" element={
               <>
                 <div className="container">
@@ -43,10 +53,13 @@ function App() {
                 </div>
               </>
             } />
-            <Route path='/user' element={<UserBody />} />
+            <Route path='/user' element={<UserBody />}/>
+            {role==='user' && token &&<Route path="/userApplied" element={<UserApplied />}/>}
+            {role==='user' && token &&<Route path="/all" element={<AllCompanies/>}/> }
+            {role==='user' && token &&<Route path="/apply/:jobId" element={<JobApplyPage />} />}
+            {role==='user' && token &&<Route path="/user/profile" element={<UserForm />} />}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/apply/:jobId" element={<JobApplyPage />} />
           </Routes>
         </div>
         <Footer />

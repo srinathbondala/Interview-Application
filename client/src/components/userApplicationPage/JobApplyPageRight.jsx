@@ -1,25 +1,20 @@
 import {  Paper, Box, Typography, Button} from '@mui/material';
 import ShowProfileCompletion from './ShowProfileCompletion';
 import axios from 'axios';
-import Cookies from 'js-cookie';
-import {useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import {useEffect, useState} from "react";
 function JobApplyPageRight({jobId}) {
-  const navigation = useNavigate();
-  const areAllFieldsValid = true;
+  const [areAllFieldsValid, setAreAllFieldsValid] = useState(false);
   useEffect(() => {
-    const token = Cookies.get('token');
-    if (!token) {
-        alert('authenticated id have expired. Please login again');
-        navigation('/login');
+    const userDetails = localStorage.getItem('details');
+    if (userDetails) {
+      const userDetailsJson = JSON.parse(userDetails);
+      if (userDetailsJson.acadamicDetailsKey !==null && userDetailsJson.profactionalDetailsKey !==null) {
+        setAreAllFieldsValid(true);
+      }
     }
-}, []);
+  }, []);
   const applyJobByUser =async ()=>{
       try {
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
-            throw new Error('User is not authenticated');
-        }
         const config = {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,

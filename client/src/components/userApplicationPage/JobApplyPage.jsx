@@ -10,7 +10,7 @@ function JobApplyPage (){
     useEffect(() => {
         const token = Cookies.get('token');
         if (!token) {
-            alert('User authenticated id have expired. Please login again');
+            alert('User authenticated id have expired. Please login again page');
             navigate('/login');
         }
     }, []);

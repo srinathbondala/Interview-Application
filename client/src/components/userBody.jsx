@@ -1,26 +1,45 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import UserContent from "./UserContent";
 import UserForm from './UserForm';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
-function UserBody(){
+import UserSideBar from "./UserSideBar";
+
+function UserBody() {
     const navigation = useNavigate();
+    const [activeComponent, setActiveComponent] = useState('content'); // Default to UserContent
+
     useEffect(() => {
         const token = Cookies.get('token');
+        console.log("This is the User Data", token);
         if (!token) {
-            alert('authenticated id have expired. Please login again');
+            alert('Authenticated ID has expired. Please login again');
             navigation('/login');
         }
-    });
+    }, [navigation]);
+
+    const handleProfileClick = () => {
+        setActiveComponent('profile');
+    };
+
+    const handleTopCompaniesClick = () => {
+        setActiveComponent('companies');
+    };
+
     return (
         <div className="container">
+            <UserSideBar 
+                user={JSON.parse(localStorage.getItem('Details'))}
+                onProfileClick={handleProfileClick}
+                onTopCompaniesClick={handleTopCompaniesClick}
+            />
             <div className="main-body">
-            <UserContent islogged={true}/>
-            </div>
-            <div className="form-section">
-            <UserForm />
+                {activeComponent === 'content' && <UserContent islogged={true} />}
+                {activeComponent === 'profile' && <UserForm />}
+                {activeComponent === 'companies' && <UserContent />} {/* Adjust based on your implementation */}
             </div>
         </div>
     );
 }
+
 export default UserBody;

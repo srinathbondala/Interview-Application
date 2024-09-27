@@ -2,10 +2,7 @@
 
 /* Apply this to your global CSS or body tag */
 body {
-  /* background: url('/imgs/temp.jpg'); */
-  /* A clean, professional gradient */
-  background-position: center;
-  background-size: contain;
+  
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -43,6 +40,7 @@ body {
 .main-body {
   flex: 1;
   min-width: 200px;
+  padding: 2rem;
 }
 
 .form-section {

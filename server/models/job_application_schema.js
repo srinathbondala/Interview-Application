@@ -23,9 +23,15 @@ const jobApplicationSchema = new Schema({
         type: String,
         default: 'Applied'
     },
-    comments: {
-        type: [String],
-        default: []
-    }
+    comments: [{
+        timestamp: {
+            type: Date,
+            default: Date.now
+        },
+        comment: {
+            type: String,
+            required: true
+        }
+    }]
 });
 module.exports = mongoose.model('JobApplication', jobApplicationSchema);

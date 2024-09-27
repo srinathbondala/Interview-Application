@@ -5,9 +5,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 const UserForm = () => {
   const location = useLocation()
-  console.log(location.state)
-  const userData = location.state.user || '';
-  console.log(userData)
+  const userData = JSON.parse(localStorage.getItem('details'))|| location.state.user;
   
   const experienceRanges = ['0-1 years', '2-3 years', '3-5 years', '5+ years'];
   const [page, setPage] = useState(0);
@@ -19,11 +17,11 @@ const UserForm = () => {
     phonenumber: userData.phone || '',
     address: userData.address || '',
     college: '',
-    grade:'',
-    branch:  '',
+    grade: '',
+    branch: '',
     passedoutyear: '',
     role: '',
-    skills:  [],
+    skills: [],
     achievements: '',
     resume: null,
     intermediate: '',
@@ -66,7 +64,7 @@ const UserForm = () => {
   };
   const validateForm = () => {
     const { firstname, lastname, address, dob, phonenumber, college, grade, passedoutyear, role, achievements, experience, intermediate, intermediate_grade,
-      intermediate_stream, intermediate_year, school, school_grade, school_year } = formData;
+      intermediate_stream, intermediate_year, school,resume, school_grade, school_year } = formData;
 
     let errorMessages = [];
 
@@ -90,6 +88,7 @@ const UserForm = () => {
       if (!role) errorMessages.push('Role is required.');
       if (!achievements) errorMessages.push('Achievements are required.');
       if (!experience) errorMessages.push('Experience is required.');
+      if(!resume)errorMessages.push('need to upload resume');
       if (formData.skills.length === 0) errorMessages.push('At least one skill is required.');
     }
 
@@ -112,9 +111,9 @@ const UserForm = () => {
     e.preventDefault();
     const errorMessage = validateForm();
     if (errorMessage) {
-        setSnackbarMessage(errorMessage);
-        setSnackbarOpen(true);
-        return;
+      setSnackbarMessage(errorMessage);
+      setSnackbarOpen(true);
+      return;
     }
 
     const requestBody = {
@@ -151,25 +150,25 @@ const UserForm = () => {
             experience: formData.experience,
             resume: formData.resume ? formData.resume.name : null,
         },
-    };
+      }
 
     const token = localStorage.getItem('jwtToken');
 
     try {
-        const response = await axios.put('http://localhost:8080/user/update-profile', requestBody, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        });
-        setSnackbarMessage('Form submitted successfully!');
-        setSnackbarOpen(true);
+      const response = await axios.put('http://localhost:8080/user/update-profile', requestBody, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      setSnackbarMessage('Form submitted successfully!');
+      setSnackbarOpen(true);
     } catch (error) {
-        console.error("Error submitting form:", error.response ? error.response.data : error.message);
-        setSnackbarMessage('Failed to submit form. Please try again.');
-        setSnackbarOpen(true);
+      console.error("Error submitting form:", error.response ? error.response.data : error.message);
+      setSnackbarMessage('Failed to submit form. Please try again.');
+      setSnackbarOpen(true);
     }
-};
+  };
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
@@ -301,7 +300,7 @@ const UserForm = () => {
       </Grid>
     </Box>
   );
-  
+
   const reviewProfile = () => (
     <Box>
       <Typography variant="h5" gutterBottom>Review Your Details</Typography>
@@ -339,30 +338,35 @@ const UserForm = () => {
   );
 
   return (
-    <Box sx={{ p: 4, backgroundColor: '#f7faff', borderRadius: 2, padding: 2, mx: 'auto', mt: 4 }}>
-      <form onSubmit={handleSubmit}>
-        {page === 0 && renderPersonalDetails()}
-        {page === 1 && renderAcademicDetails()}
-        {page === 2 && renderProfessionalDetails()}
-        {page === 3 && reviewProfile()}
+    <>
+      <Typography variant="h4" align="center">
+        Profile
+      </Typography>
+      <Box sx={{ p: 4, backgroundColor: '#f7faff', borderRadius: 2, padding: 2, mx: 'auto', mt: 4, maxWidth: '80vw',mb: 4}}>
+        <form onSubmit={handleSubmit}>
+          {page === 0 && renderPersonalDetails()}
+          {page === 1 && renderAcademicDetails()}
+          {page === 2 && renderProfessionalDetails()}
+          {page === 3 && reviewProfile()}
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-          {page > 0 && <Button variant="contained" onClick={() => handlePageChange(-1)}>Previous</Button>}
-          {page < 3 ? (
-            <Button variant="contained" onClick={() => handlePageChange(1)}>Next</Button>
-          ) : (
-            <Button variant="contained" type="submit">Submit</Button>
-          )}
-        </Box>
-      </form>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+            {page > 0 && <Button variant="contained" onClick={() => handlePageChange(-1)}>Previous</Button>}
+            {page < 3 ? (
+              <Button variant="contained" onClick={() => handlePageChange(1)}>Next</Button>
+            ) : (
+              <Button variant="contained" type="submit">Submit</Button>
+            )}
+          </Box>
+        </form>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={snackbarMessage}
-      />
-    </Box>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          message={snackbarMessage}
+        />
+      </Box>
+    </>
   );
 };
 

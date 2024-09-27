@@ -3,29 +3,35 @@ import { TextField, Button, Box, Typography, MenuItem, Chip, IconButton, Grid, S
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AddIcon from '@mui/icons-material/Add';
 import { AddCircleOutline } from '@mui/icons-material';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react'
 
 const Form = () => {
+    useGSAP(() => {
+        gsap.fromTo('.animatedForm', { x: '400', opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.5, ease:'back.in', stagger: 0.25, delay: 0.5 });
+      })
     const [formData, setFormData] = useState({
         companyName: '',
         role: '',
         experience: '',
         salary: '',
         location: '',
-        skills: [],
+        technicalSkills: [],
         bondDetails: '',
         selectionProcess: '',
         eligibilityCriteria: '',
         skillInput: '',
         employmentType: '',
         description: '',
-        registrationDeadline: '',
+        registrationDeadline: '',  // Updated for date format
     });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const validateForm = () => {
         const {
-            companyName, role, location, experience, salary, description, bondDetails, employmentType, eligibilityCriteria, selectionProcess, skills
+            companyName, role, location, experience, salary, description, bondDetails, employmentType, eligibilityCriteria, selectionProcess, technicalSkills
         } = formData;
         
         if (!companyName) return 'Company Name is required';
@@ -38,50 +44,66 @@ const Form = () => {
         if (!employmentType) return 'Employment type is required';
         if (!eligibilityCriteria) return 'Eligibility Criteria is required';
         if (!selectionProcess) return 'Selection Process is required';
-        if (skills.length === 0) return 'At least one skill is required';
+        if (technicalSkills.length === 0) return 'At least one skill is required';
         return null;
     };
 
     const handleSubmit = async (e) => {
+        window.location.reload();
         e.preventDefault();
+        handleAddSkill()
         const errorMessage = validateForm();
         if (errorMessage) {
             setSnackbarMessage(errorMessage);
             setSnackbarOpen(true);
             return;
         }
-        const response = await fetch('http://localhost:8080/admin/add-job', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-            },
-            body: JSON.stringify(formData),
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        try {
+            const randomJobId = Math.floor(Math.random() * 10000);  // Generate job ID here
+    
+            const response = await fetch('http://localhost:8080/admin/add-job', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    jobId: randomJobId,  
+                    registrationEnded: formData.registrationDeadline, 
+                    experienceRange: formData.experience, 
+                    salaryRange: formData.salary,
+                }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const data = await response.json();
+            console.log(data);
+    
+            // Clear form data
+            setFormData({
+                companyName: '',
+                role: '',
+                experience: '',
+                salary: '',
+                location: '',
+                technicalSkills: [],
+                bondDetails: '',
+                selectionProcess: '',
+                eligibilityCriteria: '',
+                skillInput: '',
+                employmentType: '',
+                description: '',
+                registrationDeadline: '',
+            });
+        } catch (error) {
+            console.error('Error:', error.message);
+            setSnackbarMessage('Failed to submit the job data. Please try again later.');
+            setSnackbarOpen(true);
         }
-
-        const data = await response.json();
-        console.log(formData);
-
-        // Clear form data
-        setFormData({
-            companyName: '',
-            role: '',
-            experience: '',
-            salary: '',
-            location: '',
-            skills: [],
-            bondDetails: '',
-            selectionProcess: '',
-            eligibilityCriteria: '',
-            skillInput: '',
-            employmentType: '',
-            description: '',
-            registrationDeadline: '',
-        });
     };
 
     const handleChange = (e) => {
@@ -92,10 +114,10 @@ const Form = () => {
     };
 
     const handleAddSkill = () => {
-        if (formData.skillInput.trim() && !formData.skills.includes(formData.skillInput)) {
+        if (formData.skillInput.trim() && !formData.technicalSkills.includes(formData.skillInput)) {
             setFormData((prevState) => ({
                 ...prevState,
-                skills: [...prevState.skills, formData.skillInput.trim()],
+                technicalSkills: [...prevState.technicalSkills, formData.skillInput.trim()],
                 skillInput: ''
             }));
         }
@@ -104,7 +126,7 @@ const Form = () => {
     const handleDeleteSkill = (skillToDelete) => {
         setFormData((prevState) => ({
             ...prevState,
-            skills: prevState.skills.filter(skill => skill !== skillToDelete)
+            technicalSkills: prevState.technicalSkills.filter(skill => skill !== skillToDelete)
         }));
     };
 
@@ -117,7 +139,7 @@ const Form = () => {
     const employmentTypes = ['Remote', 'Full Time', 'Part Time'];
 
     return (
-        <Box sx={{ mx: 'auto', mt: 4, backgroundColor: "#f7faff", borderRadius: 2, padding: 2 }}>
+        <Box className='animatedForm' sx={{ mx: 'auto', mt: 4, backgroundColor: "#f7faff", borderRadius: 2, padding: 2 }}>
             <Typography variant='h6' sx={{ fontWeight: 'bold', textTransform: 'uppercase', backdropFilter: 'blur', display: "flex", alignItems: "center" }} gutterBottom>
                 New Application <NoteAddIcon />
             </Typography>
@@ -231,7 +253,7 @@ const Form = () => {
                                 </IconButton>
                             </Box>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                {formData.skills.map((skill, index) => (
+                                {formData.technicalSkills.map((skill, index) => (
                                     <Chip
                                         key={index}
                                         label={skill}
@@ -257,41 +279,45 @@ const Form = () => {
                             fullWidth
                             value={formData.selectionProcess}
                             onChange={handleChange}
-                        />
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Registration Deadline"
+                                name="registrationDeadline"
+                                type="date"
+                                fullWidth
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                value={formData.registrationDeadline}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                startIcon={<AddIcon />}
+                                fullWidth
+                            >
+                                Add Job
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            label="Registration Deadline"
-                            fullWidth
-                            type="date"
-                            name="registrationDeadline"
-                            InputLabelProps={{ shrink: true }}
-                            value={formData.registrationDeadline}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}
-                            // onClick={addNewCompany}
-                        >
-                            <AddIcon /> ADD
-                        </Button>
-                    </Grid>
-                </Grid>
-            </form>
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
-                message={snackbarMessage}
-            />
-        </Box>
-    );
-};
-
-export default Form;
+                </form>
+    
+                <Snackbar
+                    open={snackbarOpen}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                    message={snackbarMessage}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                />
+            </Box>
+        );
+    };
+    
+    export default Form;
+    

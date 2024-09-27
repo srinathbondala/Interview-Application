@@ -10,7 +10,7 @@ exports.getProfile = async (req, res) => {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.id;
-        const data = await User.findById(userId);
+        const data = await User.findById(userId).populate('acadamicDetailsKey profactionalDetailsKey');
         return res.status(200).json(data);
     }
     catch (error) {
@@ -109,7 +109,7 @@ exports.applyJob = async (req, res) => {
         if(!user.jobApplicationKeys) {
             user.jobApplicationKeys = [];
         }
-        user.jobApplicationKeys.push(savedJobApplication._id);
+        user.jobApplicationKeys.push(jobId);
         await user.save();
         res.status(200).json({message:"success", data:savedJobApplication});
     } catch (error) {
@@ -117,3 +117,30 @@ exports.applyJob = async (req, res) => {
         console.error('Error applying for the job:', error);
     }
 };
+
+//view jobs applyed by user
+exports.getJobByUser = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+        const allJobs = await JobApplication.find({ userId: userId }).select('-comments -resume -userId').populate('jobId', 'companyName role');
+        res.status(200).json(allJobs);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+exports.getEducationDetails = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await Education.findOne({ userId: decoded.id });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react'
 import { 
     Card, 
     CardHeader, 
@@ -6,21 +8,18 @@ import {
     IconButton, 
     Typography, 
     Avatar, 
-    Button, 
-    Dialog, 
-    DialogTitle, 
-    DialogContent, 
-    DialogActions, 
-    Box, 
-    Grid, 
-    Paper, 
-    Divider 
+    Button 
 } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
-import applicationsData from '../application.json';
+import axios from 'axios';
+import ApplicationsDialog from './ApplicationsDialog';
 
 const SimpleCard = (props) => {
-    const { companyName, role, experience, technicalSkills, salaryRange, description } = props;
+    // useGSAP(() => {
+    //     gsap.fromTo('.card', { y: '200', opacity: 0 },
+    //       { y: 0, opacity: 1, duration: 0.5, ease:'back.in', stagger: 0.25, delay: 0 });
+    //   },[]);
+    const { companyName, role, experience, technicalSkills, salaryRange, description, jobId } = props;
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleDialogOpen = () => {
@@ -32,7 +31,7 @@ const SimpleCard = (props) => {
     };
 
     return (
-        <Card elevation={2} sx={{ borderRadius: 2,background:`url('/imgs/cardBg.png')`,backgroundPosition:'center',backgroundSize:'cover', transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2,display:'flex',flexDirection:'column' }}>
+        <Card className='card' elevation={2} sx={{ borderRadius: 2,background:`url('/imgs/cardBg.png')`,backgroundPosition:'center',backgroundSize:'cover', transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2,display:'flex',flexDirection:'column',height:'100%' }}>
             <CardHeader
                 avatar={
                     <Avatar sx={{ bgcolor: 'primary.main', color: 'white' }}>
@@ -57,11 +56,11 @@ const SimpleCard = (props) => {
             />
             <CardContent>
                 <Typography variant='body2' color='grey' sx={{ 
-                mb: 1,
-                maxHeight: '1.5em',
-                overflow: 'hidden', 
-                textOverflow: 'ellipsis', 
-                whiteSpace: 'nowrap' 
+                    mb: 1,
+                    maxHeight: '1.5em',
+                    overflow: 'hidden', 
+                    textOverflow: 'ellipsis', 
+                    whiteSpace: 'nowrap' 
                 }}>
                     Technical Skills: {technicalSkills.join(', ')}
                 </Typography>
@@ -71,7 +70,15 @@ const SimpleCard = (props) => {
                     </Typography>
                 )}
                 {description && (
-                    <Typography variant='body2' color='grey' sx={{ mb: 1 }}>
+                    <Typography variant='body2' color='grey' sx={{ 
+                        mb: 1,
+                        maxHeight: '4.5em',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        WebkitLineClamp: 2,
+                         }}>
                         {description}
                     </Typography>
                 )}
@@ -81,103 +88,12 @@ const SimpleCard = (props) => {
             </Button>
 
             {/* Dialog for Applications */}
-            <Dialog
-                open={dialogOpen}
-                onClose={handleDialogClose}
-                maxWidth="lg"
-                fullWidth
-                PaperProps={{
-                    sx: {
-                        backgroundColor:'#f4f4f4',
-                        borderRadius: 4,
-                        boxShadow: 4,
-                        maxHeight: '85%',
-                    },
-                }}
-            >
-                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>
-                    {companyName.toUpperCase()} Applications Overview
-                </DialogTitle>
-                <DialogContent sx={{ padding: '16px' }}>
-                    <Grid container spacing={2}>
-                        {/* New Column */}
-                        <Grid item xs={12} sm={4}>
-                            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center',color:'white',backgroundColor:'#1976d2',borderRadius:2, pb: 1,padding: '8px 16px',boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
-                                New Applications
-                            </Typography>
-                            <Box sx={{ height: '60vh', overflowY: 'auto', padding: '8px', borderRadius: '8px'}}>
-                                {applicationsData.slice(0, 6).map((app, index) => (
-                                    <Paper elevation={3} key={index} sx={{ padding: 2, mb: 2, borderRadius: 2 }}>
-                                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{app.name}</Typography>
-                                        <Typography variant="body2">Role: {app.role}</Typography>
-                                        <Typography variant="body2">Experience: {app.experience} years</Typography>
-                                        <Typography variant="body2">Skills: {app.skills.join(', ')}</Typography>
-                                        <Typography variant="body2">GPA: {app.gpa}</Typography>
-                                        <Typography variant="body2">College: {app.college}</Typography>
-                                        <Box sx={{ height: '5px', backgroundColor: '#ccc', mt: 2, borderRadius: '5px' }}>
-                                            <Box sx={{ width: '2%', height: '100%', backgroundColor: 'green', borderRadius: '5px' }} />
-                                        </Box>
-                                        <Divider sx={{ my: 1 }} />
-                                        <Grid container gap={'5px'} >
-                                        <Button variant="outlined" color="success" sx={{ mr: 1 }}>Accept</Button>
-                                        <Button variant="outlined" color="error" sx={{ mr: 1 }}>Reject</Button>
-                                        <Button variant="outlined" >View Data</Button>
-                                        </Grid>
-                                    </Paper>
-                                ))}
-                            </Box>
-                        </Grid>
-
-                        {/* Progress Column */}
-                        <Grid item xs={12} sm={4}>
-                            <Typography variant="h6" gutterBottom sx={{fontWeight: 'bold', textAlign: 'center',color:'white',backgroundColor:'#8e8e8e',borderRadius:2, pb: 1,padding: '8px 16px',boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
-                                In Progress
-                            </Typography>
-                            <Box sx={{ height: '60vh', overflowY: 'auto', padding: '8px', borderRadius: '8px'}}>
-                                {applicationsData.slice(0, 6).map((app, index) => (
-                                    <Paper elevation={3} key={index} sx={{ padding: 2, mb: 2, borderRadius: 2 }}>
-                                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{app.name}</Typography>
-                                        <Typography variant="body2">Role: {app.role}</Typography>
-                                        <Typography variant="body2">Experience: {app.experience} years</Typography>
-                                        <Typography variant="body2">Skills: {app.skills.join(', ')}</Typography>
-                                        {/* Pipeline progress */}
-                                        <Box sx={{ height: '5px', backgroundColor: '#ccc', mt: 2, borderRadius: '5px' }}>
-                                            <Box sx={{ width: '50%', height: '100%', backgroundColor: 'green', borderRadius: '5px' }} />
-                                        </Box>
-                                    </Paper>
-                                ))}
-                            </Box>
-                        </Grid>
-
-                        {/* Rejected Column */}
-                        <Grid item xs={12} sm={4}>
-                            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center',color:'white',backgroundColor:'#d93939',borderRadius:2, pb: 1,padding: '8px 16px',boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
-                                Rejected
-                            </Typography>
-                            <Box sx={{ height: '60vh', overflowY: 'auto', padding: '8px', borderRadius: '8px'}}>
-                                {applicationsData.slice(0, 6).map((app, index) => (
-                                    <Paper elevation={3} key={index} sx={{ padding: 2, mb: 2, borderRadius: 2 }}>
-                                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{app.name}</Typography>
-                                        <Typography variant="body2">Role: {app.role}</Typography>
-                                        <Typography variant="body2">Experience: {app.experience} years</Typography>
-                                        <Typography variant="body2">Skills: {app.skills.join(', ')}</Typography>
-                                        <Box sx={{ height: '5px', backgroundColor: '#ccc', mt: 2, borderRadius: '5px' }}>
-                                            <Box sx={{ width: '100%', height: '100%', backgroundColor: '#d93939', borderRadius: '5px' }} />
-                                        </Box>
-                                        <Divider sx={{ my: 1 }} />
-                                        <Button variant="outlined" color="error">Rejected</Button>
-                                    </Paper>
-                                ))}
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary" variant="contained">
-                        Close
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {dialogOpen?<ApplicationsDialog 
+                open={dialogOpen} 
+                onClose={handleDialogClose} 
+                companyName={companyName} 
+                jobId={jobId}
+            />:null}
         </Card>
     );
 };

@@ -1,9 +1,10 @@
 import { Paper, Grid, Container, Box,Pagination,Typography, Button } from "@mui/material";
 import UserCard from "./UserCard";
 import { useState, useEffect } from "react";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from "axios";
 
-const UserContent = ({islogged}) => {
+const AllCompanies = ({islogged}) => {
     const [data,setData]=useState([]);
     useEffect(() => {
         // axios.get('http://localhost:8080/user/get-all-jobs',{
@@ -18,11 +19,19 @@ const UserContent = ({islogged}) => {
             console.error(error);
         })
     }, [])
+    const handleBackClick = () => {
+        window.history.back();
+    }
 
     // console.log(data);
     return (
         <>
-            <Container sx={{ marginTop: 2 ,flexWrap:"wrap" }}>
+            <Box sx={{ display: 'flex' }}>
+                <Button variant="text" color="primary" onClick={handleBackClick}>
+                    <ArrowBackIcon/>
+                </Button>
+            </Box>
+            <Container sx={{ marginTop: 2, flexWrap: "wrap" }}>
                 <Box
                     sx={{
                         display: 'flex',
@@ -36,7 +45,7 @@ const UserContent = ({islogged}) => {
                         {data.map((item, index) => (
                             <Grid item xs={12} sm={6} md={6} key={index}>
                                 {/* <Paper elevation={3}> */}
-                                    <UserCard {...item._id} />
+                                    <UserCard {...item._id} islogged={islogged}/>
                                 {/* </Paper> */}
                             </Grid>
                         ))}
@@ -48,7 +57,7 @@ const UserContent = ({islogged}) => {
     );
 };
 
-export default UserContent;
+export default AllCompanies;
 
 
 

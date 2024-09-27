@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Grid, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { TextField, Button, Box,Link, Typography, Grid, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
@@ -49,19 +49,25 @@ const Login = () => {
 
         if (validateForm()) {
             const endpoint = userType === 'USER' ? 'http://localhost:8080/auth/register' : 'http://localhost:8080/auth/admin/register';
+            // console.log(formData)
 
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                
+                if (!response.ok) {
+                    if(response.status===400){
+                        alert('User email already Registered')
+                    }
+                    else{
+                        throw new Error('Network response was not ok');
+                    }
+                }
 
             const data = await response.json();
             console.log('User created:', data);
@@ -119,8 +125,10 @@ const Login = () => {
 
     return (
         <>
-            <Grid container sx={{ minHeight: '80vh',  /* Ensures the form takes enough space */
-        paddingBottom: '2rem'}}>
+            <Grid container sx={{
+                minHeight: '80vh',  /* Ensures the form takes enough space */
+                paddingBottom: '2rem'
+            }}>
                 <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f7faff', padding: 4 }}>
                     <Box sx={{ maxWidth: 400, width: '100%' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
@@ -270,6 +278,9 @@ const Login = () => {
                                     Register <PersonAddAlt1Icon sx={{ ml: 1 }} />
                                 </Button>
                             </Grid>
+                            <Typography variant='body1' sx={{ textAlign: 'center', mb: 2,mt:2,ml:10}}>
+                          Login Here: <Link href="/login">Click Here</Link>
+                        </Typography>
                         </Grid>
                     </Box>
                 </Grid>
