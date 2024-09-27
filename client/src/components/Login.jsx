@@ -6,7 +6,7 @@ import loginImage from '/imgs/login2.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import useToken from '../useToken';
 
-const Login = () => {
+const Login = ({logincallback}) => {
     const navigate = useNavigate();
     const [alert, setAlert] = useState(null); 
     const [userType, setUserType] = useState('USER');
@@ -58,12 +58,11 @@ const Login = () => {
                 localStorage.setItem('Details',JSON.stringify(data.user));
                 saveToken(data.token);
                 localStorage.setItem('userType', userType==="USER"?"user":"admin");
-                localStorage.setItem('details', JSON.stringify(data.user));
                 // Clear form data
                 setFormData({ email: '', password: '' });
                 setAlert(null); 
-
-               
+                logincallback(userType==="USER"?"user":"admin");
+                console.log(userType);
                 navigate(userType === 'USER' ? '/user' : '/admin', { state: data });
             } catch (error) {
                 setAlert({ message: 'Please check your password (or) Sign Up before login', severity: 'error' });

@@ -4,11 +4,12 @@ import axios from 'axios';
 import {useEffect, useState} from "react";
 function JobApplyPageRight({jobId}) {
   const [areAllFieldsValid, setAreAllFieldsValid] = useState(false);
+
   useEffect(() => {
-    const userDetails = localStorage.getItem('details');
+    const userDetails = localStorage.getItem('Details');
     if (userDetails) {
       const userDetailsJson = JSON.parse(userDetails);
-      if (userDetailsJson.acadamicDetailsKey !==null && userDetailsJson.profactionalDetailsKey !==null) {
+      if (userDetailsJson.acadamicDetailsKey !==null && userDetailsJson.profactionalDetailsKey !==null && !userDetailsJson.jobApplicationKeys.includes(jobId)) {
         setAreAllFieldsValid(true);
       }
     }

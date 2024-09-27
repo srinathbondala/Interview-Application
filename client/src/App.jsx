@@ -30,7 +30,7 @@ function App() {
   return (
     <div className="app-container">
       <BrowserRouter>
-        <Navbar />
+        <Navbar logincallback={setRole} role={role}/>
         <div className="main-content">
           <Routes>
             <Route path="/" element={
@@ -53,13 +53,14 @@ function App() {
                 </div>
               </>
             } />
-            <Route path='/user' element={<UserBody />}/>
-            {role==='user' && token &&<Route path="/userApplied" element={<UserApplied />}/>}
-            {role==='user' && token &&<Route path="/all" element={<AllCompanies/>}/> }
-            {role==='user' && token &&<Route path="/apply/:jobId" element={<JobApplyPage />} />}
-            {role==='user' && token &&<Route path="/user/profile" element={<UserForm />} />}
-            <Route path="/login" element={<Login />} />
+            {role==='user' &&<Route path='/user' element={<UserBody />}/>}
+            {role==='user' &&<Route path="/userApplied" element={<UserApplied />}/>}
+            {role==='user' &&<Route path="/all" element={<AllCompanies/>}/> }
+            {role==='user' &&<Route path="/apply/:jobId" element={<JobApplyPage />} />}
+            {role==='user' &&<Route path="/user/profile" element={<UserForm />} />}
+            <Route path="/login" element={<Login logincallback={setRole}/>} />
             <Route path="/signup" element={<Signup />} />
+          <Route path="/*" element={<h1>404 Not Found {role}</h1>} />
           </Routes>
         </div>
         <Footer />

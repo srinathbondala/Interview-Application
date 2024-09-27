@@ -16,6 +16,7 @@ function UserBody() {
             alert('Authenticated ID has expired. Please login again');
             navigation('/login');
         }
+        console.log('user');
     }, [navigation]);
 
     const handleProfileClick = () => {
@@ -36,7 +37,7 @@ function UserBody() {
             <div className="main-body">
                 {activeComponent === 'content' && <UserContent islogged={true} />}
                 {activeComponent === 'profile' && <UserForm />}
-                {activeComponent === 'companies' && <UserContent />} {/* Adjust based on your implementation */}
+                {activeComponent === 'companies' && <UserContent />} 
             </div>
         </div>
     );

@@ -1,7 +1,7 @@
 import React from 'react';
 import useToken from '../useToken';
 
-function Navbar() {
+function Navbar({logincallback,role}) {
   const handleAddRoleClick = () => {
     console.log("Navigating to Add Role");
   };
@@ -10,7 +10,10 @@ function Navbar() {
   function cleardata(){
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userType');
+    localStorage.removeItem('Details');
+    localStorage.removeItem('details');
     removeToken();
+    logincallback(null);
   }
   return (
     <>
@@ -23,15 +26,16 @@ function Navbar() {
             <span className="navbar-toggler-icon" ></span>
           </button>
 
-          { checkToken() ?(
+          { role!==null?(
          <div className="collapse navbar-collapse" id="navbarNavDropdown">
            <ul className="navbar-nav ms-auto">
                <li className="nav-item"  >
                  <a className="nav-link" href="/"><text onClick={cleardata} >LOGOUT</text></a>
                </li>
+               {role==="admin" &
                <li className="nav-item">
                  <a className="nav-link" href="/user/profile">PROFILE</a>
-               </li>
+               </li>}
            </ul>
         </div>
     ):
