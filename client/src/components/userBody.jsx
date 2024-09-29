@@ -3,7 +3,8 @@ import UserContent from "./UserContent";
 import UserForm from './UserForm';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
-import UserSideBar from "./UserSideBar";
+import UserSideBar from './UserSidebar';
+import AppliedJobBody from './User/AppliedJobBody';
 
 function UserBody() {
     const navigation = useNavigate();
@@ -11,12 +12,10 @@ function UserBody() {
 
     useEffect(() => {
         const token = Cookies.get('token');
-        console.log("This is the User Data", token);
         if (!token) {
             alert('Authenticated ID has expired. Please login again');
             navigation('/login');
         }
-        console.log('user');
     }, [navigation]);
 
     const handleProfileClick = () => {
@@ -27,17 +26,23 @@ function UserBody() {
         setActiveComponent('companies');
     };
 
+    const handleJobsClick = () => {
+        setActiveComponent('jobs');
+    };
+
     return (
         <div className="container">
             <UserSideBar 
                 user={JSON.parse(localStorage.getItem('Details'))}
                 onProfileClick={handleProfileClick}
                 onTopCompaniesClick={handleTopCompaniesClick}
+                onJobsClick={handleJobsClick}
             />
             <div className="main-body">
                 {activeComponent === 'content' && <UserContent islogged={true} />}
                 {activeComponent === 'profile' && <UserForm />}
                 {activeComponent === 'companies' && <UserContent />} 
+                {activeComponent === 'jobs' && <AppliedJobBody />}
             </div>
         </div>
     );

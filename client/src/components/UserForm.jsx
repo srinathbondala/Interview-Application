@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 const UserForm = () => {
   const location = useLocation()
-  const userData = JSON.parse(localStorage.getItem('details'))|| location.state.user;
+  const userData = JSON.parse(localStorage.getItem('Details'))|| location.state.user;
   
   const experienceRanges = ['0-1 years', '2-3 years', '3-5 years', '5+ years'];
   const [page, setPage] = useState(0);
@@ -16,23 +16,28 @@ const UserForm = () => {
     dob: userData.dateOfBirth ? new Date(userData.dateOfBirth).toISOString().substring(0, 10) : '',
     phonenumber: userData.phone || '',
     address: userData.address || '',
-    college: '',
-    grade: '',
-    branch: '',
-    passedoutyear: '',
-    role: '',
-    skills: [],
-    achievements: '',
+    // Populate academic details
+    college: userData.acadamicDetailsKey?.education?.college || '',
+    grade: userData.acadamicDetailsKey?.education?.grade || '',
+    branch: userData.acadamicDetailsKey?.education?.branch || '',
+    passedoutyear: userData.acadamicDetailsKey?.education?.passingYear || '',
+    // Populate professional details
+    role: userData.profactionalDetailsKey?.interestedRole || '',
+    skills: userData.profactionalDetailsKey?.skills || [],
+    achievements: userData.profactionalDetailsKey?.achievements || [],
     resume: null,
-    intermediate: '',
-    intermediate_grade: '',
-    intermediate_stream: '',
-    intermediate_year: '',
-    school: '',
-    school_grade: '',
-    school_year: '',
-    experience: '',
-  });
+    // Populate intermediate details
+    intermediate: userData.acadamicDetailsKey?.intermediate?.institute || '',
+    intermediate_grade: userData.acadamicDetailsKey?.intermediate?.grade || '',
+    intermediate_stream: userData.acadamicDetailsKey?.intermediate?.stream || '',
+    intermediate_year: userData.acadamicDetailsKey?.intermediate?.passedYear || '',
+    // Populate school details
+    school: userData.acadamicDetailsKey?.school?.schoolName || '',
+    school_grade: userData.acadamicDetailsKey?.school?.grade || '',
+    school_year: userData.acadamicDetailsKey?.school?.passedYear || '',
+    experience: userData.profactionalDetailsKey?.experience || '',
+});
+
   const [skillInput, setSkillInput] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -162,6 +167,7 @@ const UserForm = () => {
         },
       });
       setSnackbarMessage('Form submitted successfully!');
+      localStorage.setItem('Details',JSON.stringify(response.data));
       setSnackbarOpen(true);
     } catch (error) {
       console.error("Error submitting form:", error.response ? error.response.data : error.message);

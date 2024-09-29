@@ -11,7 +11,7 @@ const AllCompanies = ({islogged}) => {
         //     headers: {
         //         Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
         //     }
-        axios.get('http://localhost:8080/auth/top-company').then(//still end point is not defined for demo i used this end point
+        axios.get('http://localhost:8080/auth/top-company').then(
             response => {
                 setData(response.data);
             }
@@ -23,7 +23,6 @@ const AllCompanies = ({islogged}) => {
         window.history.back();
     }
 
-    // console.log(data);
     return (
         <>
             <Box sx={{ display: 'flex' }}>

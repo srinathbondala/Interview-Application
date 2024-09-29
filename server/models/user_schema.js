@@ -43,14 +43,17 @@ const userSchema = new Schema({
     },
     acadamicDetailsKey: {
         type: Schema.Types.ObjectId,
+        ref: 'Education',
         default: null
     },
     profactionalDetailsKey: {
         type: Schema.Types.ObjectId,
+        ref: 'ProfessionalDetails',
         default: null
     },
     jobApplicationKeys: {
         type: [Schema.Types.ObjectId],
+        ref: 'JobApplication',
         default: []
     }
 });

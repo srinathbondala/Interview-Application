@@ -109,6 +109,9 @@ exports.applyJob = async (req, res) => {
         if(!user.jobApplicationKeys) {
             user.jobApplicationKeys = [];
         }
+        if(user.jobApplicationKeys.includes(jobId)) {
+            return res.status(400).json({ error: 'You have already applied for this job' });
+        }
         user.jobApplicationKeys.push(jobId);
         await user.save();
         res.status(200).json({message:"success", data:savedJobApplication});
@@ -125,7 +128,15 @@ exports.getJobByUser = async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.id;
         const allJobs = await JobApplication.find({ userId: userId }).select('-comments -resume -userId').populate('jobId', 'companyName role');
-        res.status(200).json(allJobs);
+        const flattenedJobs = allJobs.map(job => ({
+            _id: job._id,
+            appliedDate: job.appliedDate,
+            status: job.status,
+            jobId: job.jobId._id,
+            companyName: job.jobId.companyName,
+            role: job.jobId.role,
+        }));
+        res.status(200).json(flattenedJobs);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

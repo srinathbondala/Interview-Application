@@ -22,6 +22,68 @@ const ApplicationsDialog = ({ open, onClose, companyName, jobId }) => {
         progressApplications: [],
         rejectedApplications: []
     });
+    const handleSuccess = async (id) => {
+        try {
+            const decision = confirm("Are you sure you want to accept this application?");
+            if (decision) {
+            const res = await axios.put(`http://localhost:8080/admin/accept-application/${id}`,{},{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+                },
+            });
+            const updatedNewApplications =[];
+            let movedApplication = null;
+            applicationsData.newApplications.forEach((app) => {
+                if (app._id === id) {
+                    app.status = 'Accepted';
+                    movedApplication = app;
+                } else {
+                    updatedNewApplications.push(app);
+                }
+            });
+            if (movedApplication) {
+                setApplicationsData({
+                    ...applicationsData,
+                    newApplications: updatedNewApplications,
+                    progressApplications: [...applicationsData.progressApplications, movedApplication]
+                });
+            }
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const handleReject = async (id) => {
+        try {
+            const decision = confirm("Are you sure you want to Reject this application?");
+            if (decision) {
+            const res = await axios.put(`http://localhost:8080/admin/reject-application/${id}`,{},{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+                },
+            });
+            const updatedNewApplications =[];
+            let movedApplication = null;
+            applicationsData.newApplications.forEach((app) => {
+                if (app._id === id) {
+                    app.status = 'Rejected';
+                    movedApplication = app;
+                } else {
+                    updatedNewApplications.push(app);
+                }
+            });
+            if (movedApplication) {
+                setApplicationsData({
+                    ...applicationsData,
+                    newApplications: updatedNewApplications,
+                    rejectedApplications: [...applicationsData.rejectedApplications, movedApplication]
+                });
+            }
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    };
     useEffect(() => {
         axios.get(`http://localhost:8080/admin/orderedJobs/${jobId}`,{
             headers: {
@@ -72,7 +134,7 @@ const ApplicationsDialog = ({ open, onClose, companyName, jobId }) => {
                             {applicationsData.newApplications.map((app, index) => (
                                 <Paper elevation={3} key={index} sx={{ padding: 2, mb: 2, borderRadius: 2 }}>
                                     <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{app.userId.email}</Typography>
-                                    <Typography variant="body2">Experience: {app.userId.profactionalDetailsKey.experience}</Typography>
+                                    <Typography variant="body2">Experience: {app.userId.profactionalDetailsKey.experience?app.userId.profactionalDetailsKey.experience: 'N/A' }</Typography>
                                     <Typography variant="body2">Achievements: {app.userId.profactionalDetailsKey.achievements.join(', ')}</Typography>
                                     <Typography variant="body2">Skills: {app.userId.profactionalDetailsKey.skills.join(', ')}</Typography>
                                     <Typography variant="body2">Grade: {app.userId.acadamicDetailsKey.education.grade}</Typography>
@@ -81,9 +143,9 @@ const ApplicationsDialog = ({ open, onClose, companyName, jobId }) => {
 
                                     <Divider sx={{ my: 1 }} />
                                     <Grid2 container gap={'5px'}>
-                                        <Button variant="outlined" color="success" sx={{ mr: 1 }}>Accept</Button>
-                                        <Button variant="outlined" color="error" sx={{ mr: 1 }}>Reject</Button>
-                                        <Button variant="outlined">View Data</Button>
+                                        <Button variant="outlined" color="success" sx={{ mr: 1 }} onClick={()=>{handleSuccess(app._id)}}>Accept</Button>
+                                        <Button variant="outlined" color="error" sx={{ mr: 1 }} onClick={()=>{handleReject(app._id)}}>Reject</Button>
+                                        <Button variant="outlined" onClick={() => window.location.href = `/admin/application/${app._id}`}>View Data</Button>
                                     </Grid2>
                                 </Paper>
                             ))}
@@ -113,7 +175,7 @@ const ApplicationsDialog = ({ open, onClose, companyName, jobId }) => {
                                         <Box sx={{ width: '50%', height: '100%', backgroundColor: 'green', borderRadius: '5px' }} />
                                     </Box>
                                     <Grid2 container gap={'5px'} sx={{marginTop:'10px'}}>
-                                        <Button variant="outlined">View Data</Button>
+                                        <Button variant="outlined" onClick={() => window.location.href = `/admin/application/${app._id}`}>View Application</Button>
                                     </Grid2>
                                 </Paper>
                             ))}
@@ -150,7 +212,10 @@ const ApplicationsDialog = ({ open, onClose, companyName, jobId }) => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="primary" variant="contained">
+                <Button onClick={()=>{ window.location.href=`admin/user-applied/${jobId}`}} color="error" variant="outlined">
+                    Explore
+                </Button>
+                <Button onClick={onClose} color="primary" variant="outlined">
                     Close
                 </Button>
             </DialogActions>

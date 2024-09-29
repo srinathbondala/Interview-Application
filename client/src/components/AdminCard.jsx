@@ -31,7 +31,7 @@ const SimpleCard = (props) => {
     };
 
     return (
-        <Card className='card' elevation={2} sx={{ borderRadius: 2,background:`url('/imgs/cardBg.png')`,backgroundPosition:'center',backgroundSize:'cover', transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2,display:'flex',flexDirection:'column',height:'100%' }}>
+        <Card className='card' elevation={2} sx={{ borderRadius: 2,background:`url('/imgs/cardBg5.jpg')`,backgroundPosition:'center',backgroundSize:'cover', transition: '0.3s', '&:hover': { boxShadow: 6 }, mb: 2,display:'flex',flexDirection:'column',height:'100%' }}>
             <CardHeader
                 avatar={
                     <Avatar sx={{ bgcolor: 'primary.main', color: 'white' }}>

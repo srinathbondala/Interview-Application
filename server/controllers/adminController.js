@@ -1,5 +1,7 @@
 const Job = require('../models/company_details_schems');
 const JobApplication = require('../models/job_application_schema');
+const {sendEmail} = require('../emailService/emailService');
+const jwt = require('jsonwebtoken');
 
 // Controller to add a new job
 const addJob = async (req, res) => {
@@ -116,6 +118,64 @@ const orderedJobs = async (req, res)=>{
     res.status(400).json({ error: error.message });
   }
 }
+// get job application based on job id
+const getJobApplication = async (req, res) => {
+  try {
+      const jobid = req.params.id;
+      const allJobs = await JobApplication.find({ jobId: jobid })
+      .select('-comments')
+      .populate({
+      path: 'userId',
+      select: 'name email -_id',
+      populate: [
+        {
+          path: 'acadamicDetailsKey',
+          model: 'Education',
+          select: 'education.grade education.passingYear education.branch education.college', 
+        },
+        {
+          path: 'profactionalDetailsKey',
+          model: 'ProfessionalDetails',
+          select: 'experience skills achievements', 
+        }
+      ]
+    });
+    res.status(200).json(allJobs);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// get user details based on job application id
+const getUserDetailsByJobId = async (req, res) => {
+  try {
+      const jobid = req.params.id;
+      const allJobs = await JobApplication.find({ _id: jobid })
+      .populate({
+        path: 'userId',
+        populate: [
+          {
+            path: 'acadamicDetailsKey',
+            model: 'Education',
+          },
+          {
+            path: 'profactionalDetailsKey',
+            model: 'ProfessionalDetails',
+          }
+        ]
+      })
+      .populate({
+        path: 'jobId',
+        model: 'Job',
+        select: 'companyName role salaryRange description'
+      })
+      res.status(200).json(allJobs);
+  }
+  catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 
 // Controller to get all new applications
 const getNewApplications = async (req, res) => {
@@ -145,9 +205,13 @@ const getActiveJobs = async (req, res) => {
 //accept application
 const acceptApplication = async (req, res) => {
   try {
-    const jobApplication = await JobApplication.findByIdAndUpdate(req.params.id, { status: 'Accepted' });
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+    const jobApplication = await JobApplication.findByIdAndUpdate(req.params.id, { status: 'Accepted' , latestChangesBy: userId, latestChangesAt: new Date()});
     res.status(200).json(jobApplication);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -155,9 +219,13 @@ const acceptApplication = async (req, res) => {
 //reject application
 const rejectApplication = async (req, res) => {
   try {
-    const jobApplication = await JobApplication.findByIdAndUpdate(req.params.id, { status: 'Rejected' });
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+    const jobApplication = await JobApplication.findByIdAndUpdate(req.params.id, { status: 'Rejected' , latestChangesBy: userId, latestChangesAt: new Date()});
     res.status(200).json(jobApplication);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -165,9 +233,13 @@ const rejectApplication = async (req, res) => {
 //change status of application
 const changeStatus = async (req, res) => {
   try {
-    const jobApplication = await JobApplication.findByIdAndUpdate(req.params.id, { status: req.body.status });
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const adminId = decoded.id;
+    const jobApplication = await JobApplication.findByIdAndUpdate(req.params.id, { status: req.body.status , latestChangesBy: adminId, latestChangesAt: new Date()});
     res.status(200).json(jobApplication);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -187,9 +259,34 @@ const addComment = async (req, res) => {
 
     res.status(200).json(jobApplication);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 };
 
+const sendEmailToUser = async (req, res) => {
+  try {
+    const { email, subject, text } = req.body;
+    await sendEmail(email, subject, text);
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
 
-module.exports = { addJob, getallJobs, getTopCompanies, getAppliedJobs,deleteJob ,getNewApplications,orderedJobs, getActiveJobs, acceptApplication, rejectApplication, changeStatus, addComment};
+const sheduledDateTime = async (req, res) => {
+  try {
+    const { email, subject, text, sheduledDateTime } = req.body;
+    await sendEmail(email, subject, text);
+    const jobApplication = await JobApplication.findByIdAndUpdate(
+      req.params.id,
+      { $push: { sheduledDateTime: sheduledDateTime} }
+    );
+    res.status(200).json(jobApplication);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+}
+
+module.exports = { addJob, getallJobs, getTopCompanies, getAppliedJobs,deleteJob ,getNewApplications,orderedJobs, getActiveJobs, acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication,getUserDetailsByJobId, sendEmailToUser,sheduledDateTime };

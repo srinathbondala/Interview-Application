@@ -8,14 +8,14 @@ import Form from "./AdminForm"; // Import your form component
 
 const MainBody = () => {
     const navigation = useNavigate();
-    if(localStorage.getItem('userType')!=="admin"|| !localStorage.getItem('jwtToken'))
-    {
-        navigation('/');
-    }
     const [data,setData]=useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredData, setFilteredData] = useState([]);
     useEffect(() => {
+        if(localStorage.getItem('userType')!=="admin"|| !localStorage.getItem('jwtToken'))
+        {
+            navigation('/');
+        }
         const token = Cookies.get('token');
         if (!token) {
             alert('authenticated id have expired. Please login again');
@@ -27,9 +27,10 @@ const MainBody = () => {
                 setFilteredData(response.data);
             }
         ).catch(error => {
+            setError('Failed to fetch data.');
             console.error(error);
         })
-    }, []);
+    }, [navigation]);
 
     const handleSearchChange = (e) => {
         const term = e.target.value;

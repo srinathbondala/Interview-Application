@@ -11,7 +11,6 @@ function Navbar({logincallback,role}) {
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userType');
     localStorage.removeItem('Details');
-    localStorage.removeItem('details');
     removeToken();
     logincallback(null);
   }
@@ -31,11 +30,24 @@ function Navbar({logincallback,role}) {
            <ul className="navbar-nav ms-auto">
                <li className="nav-item"  >
                  <a className="nav-link" href="/"><text onClick={cleardata} >LOGOUT</text></a>
-               </li>
-               {role==="admin" &
-               <li className="nav-item">
-                 <a className="nav-link" href="/user/profile">PROFILE</a>
-               </li>}
+               </li>{
+                console.log(role)
+               }
+               {role==="user" && (
+                <>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/user">USER</a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/user/profile">PROFILE</a>
+                  </li>
+                </>)}
+                {role==="admin" && (
+                <>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/admin">ADMIN</a>
+                  </li>
+                </>)}
            </ul>
         </div>
     ):

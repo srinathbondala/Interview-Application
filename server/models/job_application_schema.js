@@ -32,6 +32,18 @@ const jobApplicationSchema = new Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    latestChangesBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    latestChangesAt: {
+        type: Date,
+        default: Date.now
+    },
+    sheduledDateTime: {
+        type: [Date],
+        default: []
+    },
 });
 module.exports = mongoose.model('JobApplication', jobApplicationSchema);

@@ -6,7 +6,7 @@ const useToken = () => {
 
     const saveToken = (newToken) => {
         Cookies.set('token', newToken, {
-            expires: 3,
+            expires:  0.1667,
             // secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict',
             path: '/'

@@ -39,7 +39,7 @@ function JobApplyPageLeft() {
     <Paper elevation={3} sx={{ p: 2, width: '70%', bgcolor: 'white', flexGrow: 1, borderRadius: 1 }}>
       <Typography variant="h5">{jobDetails?.role}</Typography>
       <Typography variant="subtitle1">{jobDetails?.companyName}</Typography>
-      <Divider sx={{ my: 2 }} />
+      <Divider sx={{ my: 2, background:"black" }} />
       <Box>
         <Typography variant="body1"><strong>Location:</strong> {jobDetails?.location}</Typography>
         <Typography variant="body1"><strong>Employment Type:</strong> {jobDetails?.employmentType}</Typography>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box,Link, Typography, Grid, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { TextField, Button, Box,Link, Typography, Grid, ToggleButtonGroup, ToggleButton, Alert} from '@mui/material';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import loginImage from '/imgs/signup2.png';
 const Login = () => {
     const navigate = useNavigate();
     const [userType, setUserType] = useState('USER');
+    const [alert, setAlert] = useState(null); 
     // const [formData,setFormData]=useState({
     //     username:'',
     //     email:'',
@@ -61,13 +62,18 @@ const Login = () => {
                 });
                 
                 if (!response.ok) {
-                    if(response.status===400){
-                        alert('User email already Registered')
+                    if(response.status===400 && response.message==='User already exists'){
+                        setAlert({ message: 'User Email Already Exists', severity: 'error' });
+                    }
+                    else if(response.status===400 && response.message==='Username already exists'){
+                        setAlert({ message: 'UserName Already Exists', severity: 'error' });
                     }
                     else{
+                        setAlert({ message: 'User Already Exists', severity: 'error' });
                         throw new Error('Network response was not ok');
                     }
                 }
+                setAlert(null); 
 
             const data = await response.json();
             console.log('User created:', data);
@@ -86,9 +92,10 @@ const Login = () => {
             });
 
             // Navigate based on userType
-            navigate(userType === 'USER' ? '/login' : '/admin', { state: data });
+            navigate(userType === 'USER' ? '/login' : '/login', { state: data });
         } catch (error) {
             console.error('Error creating user:', error);
+            setAlert({ message: 'User Email (or) UserName Already Exists', severity: 'error' });
             // Handle errors (e.g., show error message)
         }
         }
@@ -125,6 +132,7 @@ const Login = () => {
 
     return (
         <>
+            {alert && <Alert variant="filled" severity={alert.severity}>{alert.message}</Alert>}
             <Grid container sx={{
                 minHeight: '80vh',  /* Ensures the form takes enough space */
                 paddingBottom: '2rem'

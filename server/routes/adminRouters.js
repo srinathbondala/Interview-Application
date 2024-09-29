@@ -1,5 +1,5 @@
 const express = require('express');
-const { addJob, getallJobs, getAppliedJobs, deleteJob,getNewApplications ,getActiveJobs, orderedJobs,acceptApplication, rejectApplication, changeStatus, addComment} = require('../controllers/adminController');
+const { addJob, getallJobs, getAppliedJobs, deleteJob,getNewApplications ,getActiveJobs, orderedJobs,acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication, getUserDetailsByJobId, sendEmailToUser,sheduledDateTime} = require('../controllers/adminController');
 
 const router = express.Router();
 
@@ -15,8 +15,10 @@ router.get('/orderedJobs/:id',orderedJobs);
 router.put('/accept-application/:id', acceptApplication);
 router.put('/reject-application/:id', rejectApplication);
 router.put('/change-status/:id', changeStatus);
-router.put('/add-comment/:id', addComment);
-
-// send email to user
+router.post('/add-comment/:id', addComment);
+router.get('/get-job-application/:id', getJobApplication);
+router.get('/get-user-details/:id', getUserDetailsByJobId);
+router.post('/send-email', sendEmailToUser);
+router.post('/sheduled-date-time/', sheduledDateTime);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Avatar, Typography } from '@mui/material';
 
-const UserSideBar = ({ user, onProfileClick, onTopCompaniesClick }) => {
+const UserSideBar = ({ user, onProfileClick, onTopCompaniesClick, onJobsClick}) => {
     return (
         <Box 
             sx={{ 
@@ -9,12 +9,13 @@ const UserSideBar = ({ user, onProfileClick, onTopCompaniesClick }) => {
                 borderRadius: 2,
                 minWidth: '250px', 
                 height: '60vh', 
-                bgcolor: '#f6f6f6', 
                 display: 'flex', 
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
                 flexDirection: 'column', 
                 alignItems: 'center', 
                 padding: '16px', 
-                boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)' 
+                boxShadow: '2px 2px 10px rgba(0, 0, 0, 0.3)'
             }}
         >
             <Avatar 
@@ -42,6 +43,7 @@ const UserSideBar = ({ user, onProfileClick, onTopCompaniesClick }) => {
                 color="secondary" 
                 fullWidth 
                 sx={{ mb: 1 }} 
+                onClick={onJobsClick}
             >
                 Applied Jobs
             </Button>

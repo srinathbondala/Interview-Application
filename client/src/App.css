@@ -2,7 +2,9 @@
 
 /* Apply this to your global CSS or body tag */
 body {
-  
+  background: url('/imgs/HomeBg.jpg');
+  background-position: center;
+  background-size: contain;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -61,4 +63,11 @@ body {
   .form-section {
     flex: 1;
   }
+}
+.remarks{
+  background-color: burlywood;
+  width: 100%;
+}
+option{
+  padding: 20px;
 }
