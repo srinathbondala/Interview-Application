@@ -38,6 +38,14 @@ body {
   padding: 20px;
   flex-wrap: wrap;
 }
+.main-body1{
+  flex: 1;
+  min-width: 200px;
+  padding: 2rem;
+  height: 82vh;
+  scrollbar-width: none;
+  overflow: auto;
+}
 
 .main-body {
   flex: 1;

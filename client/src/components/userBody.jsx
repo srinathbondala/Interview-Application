@@ -38,7 +38,7 @@ function UserBody() {
                 onTopCompaniesClick={handleTopCompaniesClick}
                 onJobsClick={handleJobsClick}
             />
-            <div className="main-body">
+            <div className="main-body1">
                 {activeComponent === 'content' && <UserContent islogged={true} />}
                 {activeComponent === 'profile' && <UserForm />}
                 {activeComponent === 'companies' && <UserContent />} 

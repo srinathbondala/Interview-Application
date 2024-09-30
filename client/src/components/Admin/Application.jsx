@@ -207,7 +207,7 @@ const Application = () => {
                 }
                 {
                     (presentStatus !== 'Applied' && presentStatus !== 'Rejected') && (
-                        <Remarks id={id} commentArray={commentsState} setComments={setComments} userName={firstName+" "+lastName} email={email} jobRole={jobId.role} status={presentStatus} setStatus={setPresentStatus} company={jobId.companyName} setSheduledDateTime = {setSheduledDateTime}/>
+                        <Remarks id={id} commentArray={commentsState} setComments={setComments} userName={firstName+" "+lastName} email={email} jobRole={jobId.role} status={presentStatus} setStatus={setPresentStatus} company={jobId.companyName} setSheduledDateTime = {setSheduledDateTime} sheduledDateTime={sheduledDateTime} phone={phone}/>
                     )
                 }
             </Paper>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid2, MenuItem, Select } from "@mui/material";
+import { Button, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid2, MenuItem, Select , IconButton} from "@mui/material";
 import { Snackbar, Alert } from '@mui/material';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
-const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , status, setStatus, company, setSheduledDateTime }) => { 
+const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , status, setStatus, company, setSheduledDateTime,sheduledDateTime, phone}) => { 
     const [remarks, setRemarks] = useState(''); 
     const [open, setOpen] = useState(false);
     const [template, setTemplate] = useState('');
@@ -106,19 +107,19 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                 });
             } else if (dialogType === 'interview') {
                 console.log(id);
-                // response = await fetch(`http://localhost:8080/admin/sheduled-date-time/${id}`, {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //         'Authorization': `Bearer ${jwtToken}`,
-                //     },
-                //     body: JSON.stringify({
-                //         email: email,
-                //         subject: `Interview Invitation for ${jobRole}`,
-                //         text: template,
-                //         sheduledDateTime: interviewDateTime,
-                //     }),
-                // });
+                response = await fetch(`http://localhost:8080/admin/sheduled-date-time/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`,
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        subject: `Interview Invitation for ${jobRole}`,
+                        text: template,
+                        sheduledDateTime: interviewDateTime,
+                    }),
+                });
             }
     
             if (response.ok) {
@@ -127,9 +128,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                 setSnackbarMessage(dialogType === 'notification' ? 'Notification sent successfully' : 'Interview scheduled successfully');
                 setSnackbarSeverity('success');
                 if(dialogType === 'interview') {
-                    const interviewDetails = JSON.parse(localStorage.getItem('Details')).sheduledDateTime;
-                    setSheduledDateTime([...interviewDetails, interviewDateTime]);
-                    localStorage.setItem('Details', JSON.stringify({ ...JSON.parse(localStorage.getItem('Details')), sheduledDateTime: [...interviewDetails, interviewDateTime] }));
+                    setSheduledDateTime([...sheduledDateTime, interviewDateTime]);
                 }
                 setOpenSnackbar(true);
                 console.log(email);
@@ -170,6 +169,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
             if (response.ok) {
                 const data = await response.json();
                 console.log('Remark added successfully:', data);
+                setComments(...commentArray, data.comments);
             } else {
                 if (response.status === 401) {
                     alert('Jwt expired. Please login again.');
@@ -265,6 +265,15 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                         >
                             Schedule Interview
                         </Button>
+                            <IconButton
+                                component="a"
+                                href={`https://wa.me/${phone}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                sx={{ ml: 1, fontSize: 'medium' }}
+                            >
+                                <WhatsAppIcon sx={{fontSize: 'x-large'}} color="success" />
+                            </IconButton>
                     </Grid2>
                 </Grid2>
             </div>

@@ -26,7 +26,6 @@ var transporter = nodemailer.createTransport({
                 console.log('Email sent');
             }
         });
-        console.log('Email sent: ' + info);
     } catch (error) {
         console.error('Error sending email:', error);
     }
