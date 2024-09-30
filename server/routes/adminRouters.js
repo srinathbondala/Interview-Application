@@ -19,6 +19,6 @@ router.post('/add-comment/:id', addComment);
 router.get('/get-job-application/:id', getJobApplication);
 router.get('/get-user-details/:id', getUserDetailsByJobId);
 router.post('/send-email', sendEmailToUser);
-router.post('/sheduled-date-time/', sheduledDateTime);
+router.post('/sheduled-date-time/:id', sheduledDateTime);
 
 module.exports = router;

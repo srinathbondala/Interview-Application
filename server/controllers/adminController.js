@@ -267,8 +267,8 @@ const addComment = async (req, res) => {
 const sendEmailToUser = async (req, res) => {
   try {
     const { email, subject, text } = req.body;
-    await sendEmail(email, subject, text);
-    res.status(200).json({ message: 'Email sent successfully' });
+    const response = await sendEmail(email, subject, text);
+    res.status(200).json({ message: response });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -277,11 +277,11 @@ const sendEmailToUser = async (req, res) => {
 const sheduledDateTime = async (req, res) => {
   try {
     const { email, subject, text, sheduledDateTime } = req.body;
-    await sendEmail(email, subject, text);
     const jobApplication = await JobApplication.findByIdAndUpdate(
       req.params.id,
       { $push: { sheduledDateTime: sheduledDateTime} }
     );
+    await sendEmail(email, subject, text);
     res.status(200).json(jobApplication);
   } catch (error) {
     console.log(error);

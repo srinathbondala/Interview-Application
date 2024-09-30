@@ -1,10 +1,12 @@
 import {  Paper, Box, Typography, Button} from '@mui/material';
 import ShowProfileCompletion from './ShowProfileCompletion';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import {useEffect, useState} from "react";
 function JobApplyPageRight({jobId}) {
   const [areAllFieldsValid, setAreAllFieldsValid] = useState(false);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const navigator = useNavigate();
 
   useEffect(() => {
     const userDetails = localStorage.getItem('Details');
@@ -22,6 +24,7 @@ function JobApplyPageRight({jobId}) {
   }, []);
   const applyJobByUser =async ()=>{
       try {
+       if(confirm('Are you sure you want to apply for this job?')){
         const config = {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
@@ -35,8 +38,9 @@ function JobApplyPageRight({jobId}) {
         userDetails.jobApplicationKeys.push(jobId);
         localStorage.setItem('Details', JSON.stringify(userDetails));
         alert(response.data.message);
-        navigation(-1);
+        navigator(-1);
         return response.data;
+      }
       } catch (error) {
           console.log(error);
           // console.error('Error applying for the job:', error.response ? error.response.data.error : error.message);

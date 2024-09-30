@@ -1,18 +1,21 @@
 import React from 'react';
 import useToken from '../useToken';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar({logincallback,role}) {
+  const navigate = useNavigate();
   const handleAddRoleClick = () => {
     console.log("Navigating to Add Role");
   };
 
   const { removeToken,checkToken } = useToken();
   function cleardata(){
+    logincallback('');
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userType');
     localStorage.removeItem('Details');
+    navigate('/');
     removeToken();
-    logincallback(null);
   }
   return (
     <>
@@ -28,11 +31,10 @@ function Navbar({logincallback,role}) {
           { role!==null?(
          <div className="collapse navbar-collapse" id="navbarNavDropdown">
            <ul className="navbar-nav ms-auto">
+           {role==="user" || role==="admin" ?(
                <li className="nav-item"  >
-                 <a className="nav-link" href="/"><text onClick={cleardata} >LOGOUT</text></a>
-               </li>{
-                console.log(role)
-               }
+                 <a className="nav-link" href=''onClick={cleardata} >LOGOUT</a>
+               </li>):(<></>)}
                {role==="user" && (
                 <>
                   <li className="nav-item">
@@ -74,7 +76,7 @@ function Navbar({logincallback,role}) {
           <div className="modal-content">
             <div className="modal-header" style={{ backgroundColor: '#2B3035', color: 'white' }}>
               <h5 className="modal-title" id="aboutModalLabel">About the Interview  App</h5>
-              <button type="button" className="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              {/* <button type="button" className="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button> */}
             </div>
             <div className="modal-body" style={{ padding: '20px', fontSize: '16px' }}>
               <p>The Interview Scheduler App is designed to streamline the interview process for both recruiters and candidates.

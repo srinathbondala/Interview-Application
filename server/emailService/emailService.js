@@ -4,15 +4,15 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'interviewtrackapplication@gmail.com',
-        pass: 'InterviewTrack@123'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     },
   });
   
-  const sendEmail = async (toUSer, subject1, text1) => {
+  const sendEmail = async (toUser, subject1, text1) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to : toUSer,
+        to : toUser,
         subject: subject1,
         text: text1,
     };
@@ -26,7 +26,7 @@ var transporter = nodemailer.createTransport({
                 console.log('Email sent');
             }
         });
-        console.log('Email sent: ' + info.response);
+        console.log('Email sent: ' + info);
     } catch (error) {
         console.error('Error sending email:', error);
     }

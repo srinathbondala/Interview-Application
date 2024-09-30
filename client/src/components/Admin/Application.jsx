@@ -16,6 +16,7 @@ const Application = () => {
     const [error, setError] = useState(null);
     const [commentsState, setComments] = useState([]);
     const [presentStatus, setPresentStatus] = useState('');
+    const [sheduledDateTime, setSheduledDateTime] = useState([]);
 
     useEffect(() => {
         const fetchApplicationDetails = async () => {
@@ -37,6 +38,7 @@ const Application = () => {
                 setApplications(response.data[0]);
                 setPresentStatus(response.data[0].status);
                 setComments(response.data[0].comments);
+                setSheduledDateTime(response.data[0].sheduledDateTime);
             } catch (error) {
                 console.error('Error:', error);
                 setError('Error fetching application details.');
@@ -108,7 +110,7 @@ const Application = () => {
         }
     };
 
-    const { _id, userId, jobId, status, appliedDate, latestChangesAt } = applications || {};
+    const { _id, userId, jobId, status, appliedDate, latestChangesAt} = applications || {};
     const { firstName, lastName, email, phone, address, dateOfBirth, acadamicDetailsKey, profactionalDetailsKey } = userId || {};
     const { education = {}, intermediate = {}, school = {} } = acadamicDetailsKey || {};
     const { skills = [], experience = 'Not provided', achievements = [] } = profactionalDetailsKey || {};
@@ -205,9 +207,32 @@ const Application = () => {
                 }
                 {
                     (presentStatus !== 'Applied' && presentStatus !== 'Rejected') && (
-                        <Remarks id={id} commentArray={commentsState} setComments={setComments} userName={firstName+" "+lastName} email={email} jobRole={jobId.role} status={presentStatus} setStatus={setPresentStatus} company={jobId.companyName}/>
+                        <Remarks id={id} commentArray={commentsState} setComments={setComments} userName={firstName+" "+lastName} email={email} jobRole={jobId.role} status={presentStatus} setStatus={setPresentStatus} company={jobId.companyName} setSheduledDateTime = {setSheduledDateTime}/>
                     )
                 }
+            </Paper>
+            <Paper sx={{ padding: 3, marginBottom: 3 }} elevation={1}>
+                {Array.isArray(sheduledDateTime) && sheduledDateTime.length > 0 ? (
+                <>
+                <Typography variant="h5" gutterBottom sx={{ color: '#424242' }}>
+                    Interview Scheduling Details
+                </Typography>
+
+                {sheduledDateTime.map((dateTime, index) => (
+                    <Grid container spacing={2} key={index}>
+                    <Grid item xs={12} sm={6}>
+                        <Typography>
+                            <strong>Interview {index + 1}:</strong> {dateTime ? new Date(dateTime).toLocaleString() : 'Not provided'}
+                        </Typography>
+                    </Grid>
+                    </Grid>
+                ))}
+                </>
+            ) : (
+                <Typography variant="h6" sx={{ color: '#9e9e9e' }}>
+                No scheduling details available.
+                </Typography>
+            )}
             </Paper>
         </Box>
     );

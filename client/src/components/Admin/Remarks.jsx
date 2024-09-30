@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid2, MenuItem, Select } from "@mui/material";
 import { Snackbar, Alert } from '@mui/material';
 
-const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , status, setStatus, company }) => { 
+const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , status, setStatus, company, setSheduledDateTime }) => { 
     const [remarks, setRemarks] = useState(''); 
     const [open, setOpen] = useState(false);
     const [template, setTemplate] = useState('');
@@ -105,19 +105,20 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                     }),
                 });
             } else if (dialogType === 'interview') {
-                response = await fetch(`http://localhost:8080/admin/sheduled-date-time/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`,
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        subject: `Interview Invitation for ${jobRole}`,
-                        text: template,
-                        sheduledDateTime: interviewDateTime,
-                    }),
-                });
+                console.log(id);
+                // response = await fetch(`http://localhost:8080/admin/sheduled-date-time/${id}`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'Authorization': `Bearer ${jwtToken}`,
+                //     },
+                //     body: JSON.stringify({
+                //         email: email,
+                //         subject: `Interview Invitation for ${jobRole}`,
+                //         text: template,
+                //         sheduledDateTime: interviewDateTime,
+                //     }),
+                // });
             }
     
             if (response.ok) {
@@ -125,6 +126,11 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                 console.log(dialogType === 'notification' ? 'Notification Sent' : 'Interview Scheduled', data);
                 setSnackbarMessage(dialogType === 'notification' ? 'Notification sent successfully' : 'Interview scheduled successfully');
                 setSnackbarSeverity('success');
+                if(dialogType === 'interview') {
+                    const interviewDetails = JSON.parse(localStorage.getItem('Details')).sheduledDateTime;
+                    setSheduledDateTime([...interviewDetails, interviewDateTime]);
+                    localStorage.setItem('Details', JSON.stringify({ ...JSON.parse(localStorage.getItem('Details')), sheduledDateTime: [...interviewDetails, interviewDateTime] }));
+                }
                 setOpenSnackbar(true);
                 console.log(email);
             } else {
