@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
-import useToken from "../useToken";
+import useToken from "../../useToken";
 
 const UserContent = ({ islogged }) => {
     const { token } = useToken();

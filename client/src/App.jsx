@@ -1,20 +1,20 @@
 import './App.css';
 import Navbar from './components/Navbar';
-import MainBody from './components/AdminContent';
+import MainBody from './components/Admin/AdminContent';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Form from './components/AdminForm';
+import Form from './components/Admin/AdminForm';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import UserContent from './components/UserContent';
+import UserContent from './components/User/UserContent';
 import MainPage from './components/MainPage';
 import Footer from './components/Footer';
-import UserBody from './components/userBody';
-import JobApplyPage from './components/userApplicationPage/JobApplyPage';
+import UserBody from './components/User/userBody';
+import JobApplyPage from './components/User/userApplicationPage/JobApplyPage';
 import AllCompanies from './components/AllCompanies';
-import UserApplied from './components/userApplied';
+import UserApplied from './components/Admin/userApplied';
 import { useState, useEffect } from 'react';
 import useToken from './useToken';
-import UserForm from './components/UserForm';
+import UserForm from './components/User/UserForm';
 import NotFound from './components/OtherPage/NotFound';
 import Application from './components/Admin/Application';
 
@@ -70,7 +70,7 @@ function App() {
             )}
             <Route path="/login" element={<Login logincallback={setRole}/>} />
             <Route path="/signup" element={<Signup />} />
-          <Route path="/*" element={<NotFound />} />
+            <Route path="/*" element={<NotFound />} />
           </Routes>
         </div>
         <Footer />

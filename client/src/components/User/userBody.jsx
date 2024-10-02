@@ -4,11 +4,11 @@ import UserForm from './UserForm';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import UserSideBar from './UserSidebar';
-import AppliedJobBody from './User/AppliedJobBody';
+import AppliedJobBody from './AppliedJobBody';
 
 function UserBody() {
     const navigation = useNavigate();
-    const [activeComponent, setActiveComponent] = useState('content'); // Default to UserContent
+    const [activeComponent, setActiveComponent] = useState('content');
 
     useEffect(() => {
         const token = Cookies.get('token');

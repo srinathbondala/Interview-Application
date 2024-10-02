@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Box, Container , Button} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid'; 
 import { useParams } from 'react-router-dom';
-import useToken from '../useToken';
+import useToken from '../../useToken';
 const UserApplied = () => {
     const { token } = useToken();
     if (!token) {

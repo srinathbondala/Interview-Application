@@ -1,5 +1,5 @@
 import { Paper, Grid, Container, Box,Pagination,Typography, Button } from "@mui/material";
-import UserCard from "./UserCard";
+import UserCard from "../components/User/UserCard";
 import { useState, useEffect } from "react";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from "axios";

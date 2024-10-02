@@ -62,7 +62,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
     applicationTrack@gmail.com`;
 
     useEffect(() => {
-        if(commentArray === undefined) {
+        if(!Array.isArray(commentArray)) {
             setComments([]);
         }
     }, [commentArray]);
@@ -156,6 +156,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
 
     const handleAddRemark = async () => {
         try {
+            setRemarks("");
             const jwtToken = localStorage.getItem('jwtToken');
             const response = await fetch(`http://localhost:8080/admin/add-comment/${id}`, {
                 method: 'POST',
@@ -168,8 +169,8 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Remark added successfully:', data);
-                setComments(...commentArray, data.comments);
+                console.log('Remark added successfully: ', data);
+                setComments([...commentArray, data.newComment]);
             } else {
                 if (response.status === 401) {
                     alert('Jwt expired. Please login again.');
@@ -221,7 +222,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                 {commentArray.map((value, index) => (
                     <Paper key={index} sx={{ display: "flex", justifyContent: "space-between", padding: "16px", marginBottom: "16px" }}>
                         <Typography><strong>{index + 1}.  </strong>{value.comment}</Typography>
-                        <Typography variant="body2">{value.timestamp}</Typography>
+                        <Typography variant="body2">{value.timestamp.toString()}</Typography>
                     </Paper>
                 ))}
                 <h4>Change Status</h4>

@@ -24,7 +24,7 @@ const UserSideBar = ({ user, onProfileClick, onTopCompaniesClick, onJobsClick}) 
                     height: 100, 
                     mb: 2 
                 }} 
-                src={'/imgs/boy.png'} 
+                src={'/imgs/boy.jpg'} 
             />
             <Typography variant="h6" sx={{ mb: 2 }}>
                 {JSON.parse(localStorage.getItem('Details')).username}

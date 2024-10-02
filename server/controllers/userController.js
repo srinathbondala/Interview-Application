@@ -4,6 +4,7 @@ const Education = require('../models/acadamic_details_schema');
 const ProfessionalDetails = require('../models/professional_details_schema');
 const Job = require('../models/company_details_schems');
 const JobApplication = require('../models/job_application_schema');
+const {sendEmail} = require('../emailService/emailService');
 //Get user profile
 exports.getProfile = async (req, res) => {
     try {
@@ -52,8 +53,8 @@ exports.updateProfile = async (req, res) => {
           }
       
           await user.save();
-      
-        return res.status(200).json({personalData, educationData, professionalData});
+          const data = await User.findById(userId).populate('acadamicDetailsKey profactionalDetailsKey');
+          return res.status(200).json(data);
     }
     catch (error) {
         res.status(400).json({ error: error.message });
@@ -114,7 +115,11 @@ exports.applyJob = async (req, res) => {
         }
         user.jobApplicationKeys.push(jobId);
         await user.save();
-        res.status(200).json({message:"success", data:savedJobApplication});
+        const email = user.email;
+        const subject = 'Job Application';
+        const text = `You have successfully applied for the job ${job.role} at ${job.companyName}`;
+        await sendEmail(email, subject, text);
+        res.status(200).json({message:"Job Application Successfull", data:savedJobApplication});
     } catch (error) {
         res.status(400).json({ error: error.message });
         console.error('Error applying for the job:', error);

@@ -1,46 +1,75 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, TextField, Typography, Box, Grid, Chip, MenuItem, IconButton, Snackbar } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+import { Step, Stepper, StepLabel } from '@mui/material';
 import axios from 'axios';
 const UserForm = () => {
   const location = useLocation()
-  const userData = JSON.parse(localStorage.getItem('Details'))|| location.state.user;
-  
+  const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('Details'))||{});
   const experienceRanges = ['0-1 years', '2-3 years', '3-5 years', '5+ years'];
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState({
-    firstname: userData.firstName || '',
-    lastname: userData.lastName || '',
-    email: userData.email || '',
-    dob: userData.dateOfBirth ? new Date(userData.dateOfBirth).toISOString().substring(0, 10) : '',
-    phonenumber: userData.phone || '',
-    address: userData.address || '',
-    // Populate academic details
-    college: userData.acadamicDetailsKey?.education?.college || '',
-    grade: userData.acadamicDetailsKey?.education?.grade || '',
-    branch: userData.acadamicDetailsKey?.education?.branch || '',
-    passedoutyear: userData.acadamicDetailsKey?.education?.passingYear || '',
-    // Populate professional details
-    role: userData.profactionalDetailsKey?.interestedRole || '',
-    skills: userData.profactionalDetailsKey?.skills || [],
-    achievements: userData.profactionalDetailsKey?.achievements || [],
+    firstname: '',
+    lastname: '',
+    email: '',
+    dob: '',
+    phonenumber: '',
+    address: '',
+    // Initialize academic details
+    college: '',
+    grade: '',
+    branch: '',
+    passedoutyear: '',
+    // Initialize professional details
+    role: '',
+    skills: [],
+    achievements: [],
     resume: null,
-    // Populate intermediate details
-    intermediate: userData.acadamicDetailsKey?.intermediate?.institute || '',
-    intermediate_grade: userData.acadamicDetailsKey?.intermediate?.grade || '',
-    intermediate_stream: userData.acadamicDetailsKey?.intermediate?.stream || '',
-    intermediate_year: userData.acadamicDetailsKey?.intermediate?.passedYear || '',
-    // Populate school details
-    school: userData.acadamicDetailsKey?.school?.schoolName || '',
-    school_grade: userData.acadamicDetailsKey?.school?.grade || '',
-    school_year: userData.acadamicDetailsKey?.school?.passedYear || '',
-    experience: userData.profactionalDetailsKey?.experience || '',
-});
+    // Initialize intermediate details
+    intermediate: '',
+    intermediate_grade: '',
+    intermediate_stream: '',
+    intermediate_year: '',
+    // Initialize school details
+    school: '',
+    school_grade: '',
+    school_year: '',
+    experience: '',
+  });
 
   const [skillInput, setSkillInput] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  useEffect(() => {
+    if (userData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        firstname: userData.firstName || '',
+        lastname: userData.lastName || '',
+        email: userData.email || '',
+        dob: userData.dateOfBirth ? new Date(userData.dateOfBirth).toISOString().substring(0, 10) : '',
+        phonenumber: userData.phone || '',
+        address: userData.address || '',
+        college: userData.acadamicDetailsKey?.education?.college || '',
+        grade: userData.acadamicDetailsKey?.education?.grade || '',
+        branch: userData.acadamicDetailsKey?.education?.branch || '',
+        passedoutyear: userData.acadamicDetailsKey?.education?.passingYear || '',
+        role: userData.profactionalDetailsKey?.interestedRole || '',
+        skills: userData.profactionalDetailsKey?.skills || [],
+        achievements: userData.profactionalDetailsKey?.achievements || [],
+        intermediate: userData.acadamicDetailsKey?.intermediate?.institute || '',
+        intermediate_grade: userData.acadamicDetailsKey?.intermediate?.grade || '',
+        intermediate_stream: userData.acadamicDetailsKey?.intermediate?.stream || '',
+        intermediate_year: userData.acadamicDetailsKey?.intermediate?.passedYear || '',
+        school: userData.acadamicDetailsKey?.school?.schoolName || '',
+        school_grade: userData.acadamicDetailsKey?.school?.grade || '',
+        school_year: userData.acadamicDetailsKey?.school?.passedYear || '',
+        experience: userData.profactionalDetailsKey?.experience || '',
+      }));
+    }
+  }, [userData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,7 +122,7 @@ const UserForm = () => {
       if (!role) errorMessages.push('Role is required.');
       if (!achievements) errorMessages.push('Achievements are required.');
       if (!experience) errorMessages.push('Experience is required.');
-      if(!resume)errorMessages.push('need to upload resume');
+      // if(!resume)errorMessages.push('need to upload resume');
       if (formData.skills.length === 0) errorMessages.push('At least one skill is required.');
     }
 
@@ -168,6 +197,7 @@ const UserForm = () => {
       });
       setSnackbarMessage('Form submitted successfully!');
       localStorage.setItem('Details',JSON.stringify(response.data));
+      console.log(response.data);
       setSnackbarOpen(true);
     } catch (error) {
       console.error("Error submitting form:", error.response ? error.response.data : error.message);
@@ -342,14 +372,21 @@ const UserForm = () => {
       </Grid>
     </Box>
   );
-
+  const steps = ['Personal Details', 'Academic Details', 'Professional Details', 'Review'];
   return (
     <>
       <Typography variant="h4" align="center">
         Profile
       </Typography>
+      <Stepper activeStep={page} alternativeLabel>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
       <Box sx={{ p: 4, backgroundColor: '#f7faff', borderRadius: 2, padding: 2, mx: 'auto', mt: 4, maxWidth: '80vw',mb: 4}}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e)=>{handleSubmit(e)}}>
           {page === 0 && renderPersonalDetails()}
           {page === 1 && renderAcademicDetails()}
           {page === 2 && renderProfessionalDetails()}
@@ -358,7 +395,7 @@ const UserForm = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
             {page > 0 && <Button variant="contained" onClick={() => handlePageChange(-1)}>Previous</Button>}
             {page < 3 ? (
-              <Button variant="contained" onClick={() => handlePageChange(1)}>Next</Button>
+              <Button variant="contained" onClick={() => handlePageChange(1)} type='button'>Next</Button>
             ) : (
               <Button variant="contained" type="submit">Submit</Button>
             )}

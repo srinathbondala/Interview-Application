@@ -252,12 +252,12 @@ const addComment = async (req, res) => {
       comment: req.body.comment
     };
 
-    const jobApplication = await JobApplication.findByIdAndUpdate(
+    await JobApplication.findByIdAndUpdate(
       req.params.id,
       { $push: { comments: newComment } }
     );
 
-    res.status(200).json(jobApplication);
+    res.status(200).json({newComment});
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: error.message });
