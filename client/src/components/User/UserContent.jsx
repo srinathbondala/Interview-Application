@@ -18,21 +18,29 @@ const UserContent = ({ islogged }) => {
     const [filteredData, setFilteredData] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/auth/top-company')
+        // axios.get('http://localhost:8080/auth/top-company')
+        axios.get('http://localhost:8080/user/get-all-jobs',{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
             .then(response => {
                 setData(response.data);
+                console.log(response.data);
                 setFilteredData(response.data);
             })
             .catch(error => {
                 console.error(error);
             });
-    }, []);
+    }, [token]);
 
     const handleSearchChange = (e) => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
         const filtered = data.filter(item =>
-            item._id.companyName.toLowerCase().includes(query)
+            // item._id.companyName.toLowerCase().includes(query)
+            item.companyName.toLowerCase().includes(query)
         );
         console.log(filtered);
         setFilteredData(filtered);
@@ -67,7 +75,7 @@ const UserContent = ({ islogged }) => {
                     <Grid container spacing={2}>
                         {filteredData.map((item, index) => (
                             <Grid item xs={12} sm={6} md={6} key={index}>
-                                <UserCard {...item._id} islogged={islogged} />
+                                <UserCard {...item} islogged={islogged} />
                             </Grid>
                         ))}
                     </Grid>

@@ -55,6 +55,7 @@ const SimpleCard = (props) => {
                 }
             />
             <CardContent>
+                <Typography variant='body2' color='grey' sx={{ mb: 1 }}>Job Id : {jobId}</Typography>
                 <Typography variant='body2' color='grey' sx={{ 
                     mb: 1,
                     maxHeight: '1.5em',

@@ -266,15 +266,15 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                         >
                             Schedule Interview
                         </Button>
-                            <IconButton
-                                component="a"
-                                href={`https://wa.me/${phone}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{ ml: 1, fontSize: 'medium' }}
-                            >
-                                <WhatsAppIcon sx={{fontSize: 'x-large'}} color="success" />
-                            </IconButton>
+                        <IconButton
+                            component="a"
+                            href={`https://wa.me/${phone}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            sx={{ ml: 1, fontSize: 'medium' }}
+                        >
+                            <WhatsAppIcon sx={{fontSize: 'x-large'}} color="success" />
+                        </IconButton>
                     </Grid2>
                 </Grid2>
             </div>

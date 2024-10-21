@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Divider, Grid, Paper, Container, Button, CircularProgress, Grid2 } from '@mui/material';
+import { Box, Typography, Divider, Grid, Paper, Container, Button, CircularProgress, Grid2, Card } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import useToken from '../../useToken';
@@ -198,11 +198,18 @@ const Application = () => {
                     </Grid>
                 </Paper>
                 {
-                    presentStatus === 'Applied' && (
+                    presentStatus === 'Applied' ? (
                         <Container>
                             <Button variant="contained" color="primary" onClick={() => { handleSuccess(_id) }} sx={{marginRight:"10px"}}>Accept</Button>
                             <Button variant="contained" color="error" onClick={() => { handleReject(_id) }}>Reject</Button>
                         </Container>
+                    ):(
+                        <Card sx={{display:'flex', justifyContent:'flex-end', width:'100%'}}>
+                            <Button 
+                                variant='contained'
+                                sx={{ margin: "10px 5px"}} 
+                            >Disable User</Button>
+                        </Card>
                     )
                 }
                 {

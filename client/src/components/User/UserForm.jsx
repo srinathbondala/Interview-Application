@@ -393,9 +393,13 @@ const UserForm = () => {
           {page === 3 && reviewProfile()}
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-            {page > 0 && <Button variant="contained" onClick={() => handlePageChange(-1)}>Previous</Button>}
+            {page > 0  ? (
+              <Button variant="contained" onClick={() => handlePageChange(-1)}>Previous</Button>
+            ) : (
+              <Box sx={{ width: '100px' }} /> 
+            )}
             {page < 3 ? (
-              <Button variant="contained" onClick={() => handlePageChange(1)} type='button'>Next</Button>
+              <Button variant="contained" onClick={() => handlePageChange(1)} type='button' >Next</Button>
             ) : (
               <Button variant="contained" type="submit">Submit</Button>
             )}
