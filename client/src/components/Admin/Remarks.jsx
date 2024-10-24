@@ -13,7 +13,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
+    const [subject, setSubject] = useState('');
     
     // State for interview scheduling
     // const [interviewDate, setInterviewDate] = useState('');
@@ -25,7 +25,6 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
     }, [status]);
 
     const notificationTemplate = `
-    Subject: Application Status Update
 
     Dear ${userName},
 
@@ -76,6 +75,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
     const handleClose = () => {
         setOpen(false);
         setTemplate(''); 
+        setSubject('');
     };
 
     // const handleSend = () => {
@@ -101,7 +101,7 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                     },
                     body: JSON.stringify({
                         email: email,
-                        subject: `Application Status Update for ${jobRole}`,
+                        subject: subject,
                         text: template,
                     }),
                 });
@@ -306,6 +306,14 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                             sx={{ marginTop: '20px', marginBottom: '20px' }}
                         />
                     )}
+                    <TextField
+                        label="Subject"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        fullWidth
+                        variant="outlined"
+                        sx={{ marginTop: '20px', marginBottom: '20px' }}
+                    />
                     <TextField
                         label={dialogType === 'notification' ? "Notification Template" : "Interview Schedule Template"}
                         multiline

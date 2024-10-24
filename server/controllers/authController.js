@@ -37,10 +37,6 @@ exports.register = async (req, res) => {
     }
 };
 
-exports.login = async (req, res) => {
- 
-};
-
 // User Login
 exports.login = async (req, res) => {
     const { email, password } = req.body;
@@ -53,6 +49,9 @@ exports.login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
+        }
+        if (user.isDisabled) {
+            return res.status(400).json({ message: 'Please contact adminstration' });
         }
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '4h' });
 

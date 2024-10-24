@@ -1,5 +1,5 @@
 const express = require('express');
-const { addJob, getallJobs, getAppliedJobs, deleteJob,getNewApplications ,getActiveJobs, orderedJobs,acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication, getUserDetailsByJobId, sendEmailToUser,sheduledDateTime} = require('../controllers/adminController');
+const { addJob, getallJobs, getAppliedJobs, deleteJob,getNewApplications ,getActiveJobs, orderedJobs,acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication, getUserDetailsByJobId, sendEmailToUser,sheduledDateTime,disableUser} = require('../controllers/adminController');
 
 const router = express.Router();
 
@@ -20,5 +20,6 @@ router.get('/get-job-application/:id', getJobApplication);
 router.get('/get-user-details/:id', getUserDetailsByJobId);
 router.post('/send-email', sendEmailToUser);
 router.post('/sheduled-date-time/:id', sheduledDateTime);
+router.get('/disable-user/:id', disableUser);
 
 module.exports = router;

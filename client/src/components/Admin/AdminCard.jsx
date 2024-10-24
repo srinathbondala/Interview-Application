@@ -11,15 +11,15 @@ import {
     Button 
 } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
-import axios from 'axios';
 import ApplicationsDialog from '../ApplicationsDialog';
 
 const SimpleCard = (props) => {
+    console.log(props);
     // useGSAP(() => {
     //     gsap.fromTo('.card', { y: '200', opacity: 0 },
     //       { y: 0, opacity: 1, duration: 0.5, ease:'back.in', stagger: 0.25, delay: 0 });
     //   },[]);
-    const { companyName, role, experience, technicalSkills, salaryRange, description, jobId } = props;
+    const { companyName, role, experience, technicalSkills, salaryRange, description, _id } = props;
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleDialogOpen = () => {
@@ -55,7 +55,7 @@ const SimpleCard = (props) => {
                 }
             />
             <CardContent>
-                <Typography variant='body2' color='grey' sx={{ mb: 1 }}>Job Id : {jobId}</Typography>
+                <Typography variant='body2' color='grey' sx={{ mb: 1 }}>Job Id : {_id}</Typography>
                 <Typography variant='body2' color='grey' sx={{ 
                     mb: 1,
                     maxHeight: '1.5em',
@@ -93,7 +93,7 @@ const SimpleCard = (props) => {
                 open={dialogOpen} 
                 onClose={handleDialogClose} 
                 companyName={companyName} 
-                jobId={jobId}
+                jobId={_id}
             />:null}
         </Card>
     );

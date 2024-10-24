@@ -27,10 +27,14 @@ const deleteJob = async (req, res) => {
 // Controller to get all jobs
 const getallJobs = async (req, res) => {
   try {
-    const allJobs = await Job.find();
+    const allJobs = await Job.find({
+        registrationEnded: { 
+            $gte: new Date().toISOString().split('T')[0]
+        }
+    });
     res.status(200).json(allJobs);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
   }
 };
 
@@ -41,18 +45,19 @@ const getTopCompanies = async (req, res) => {
       {
         $group: {
           _id: {
-            jobId: "$_id",
+            _id: "$_id",
             companyName: "$companyName",
             role: "$role",
             salaryRange: "$salaryRange",
             description: "$description",
-            technicalSkills: "$technicalSkills"
+            technicalSkills: "$technicalSkills",
+            createdDate: "$createdDate"
           },
           totalJobs: { $sum: 1 }
         }
       },
-      { $sort: { totalJobs: -1 } },
-      { $limit: 10 }
+      { $sort: { "_id.createdDate": 1 ,"_id.companyName": 1, "totalJobs": 1 } },
+      // { $limit: 10 }
     ]);
     
     res.status(200).json(topCompanies);
@@ -108,6 +113,7 @@ const orderedJobs = async (req, res)=>{
       }
     });
 
+    // console.log(appliedJobs, rejectedJobs, otherJobs);
     res.status(200).json({
       applied: appliedJobs,
       rejected: rejectedJobs,
@@ -289,4 +295,13 @@ const sheduledDateTime = async (req, res) => {
   }
 }
 
-module.exports = { addJob, getallJobs, getTopCompanies, getAppliedJobs,deleteJob ,getNewApplications,orderedJobs, getActiveJobs, acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication,getUserDetailsByJobId, sendEmailToUser,sheduledDateTime };
+const disableUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, { isDisabled: true });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+module.exports = { addJob, getallJobs, getTopCompanies, getAppliedJobs,deleteJob ,getNewApplications,orderedJobs, getActiveJobs, acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication,getUserDetailsByJobId, sendEmailToUser,sheduledDateTime ,disableUser};

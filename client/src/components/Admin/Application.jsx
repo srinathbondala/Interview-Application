@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Divider, Grid, Paper, Container, Button, CircularProgress, Grid2, Card } from '@mui/material';
+import { Box, Typography, Divider, Grid, Paper, Container, Button, CircularProgress, Grid2, Card , Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@mui/material';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import useToken from '../../useToken';
@@ -17,6 +17,7 @@ const Application = () => {
     const [commentsState, setComments] = useState([]);
     const [presentStatus, setPresentStatus] = useState('');
     const [sheduledDateTime, setSheduledDateTime] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         const fetchApplicationDetails = async () => {
@@ -67,6 +68,33 @@ const Application = () => {
             </Box>
         );
     }
+    const handleDisableUser = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/admin/disable-user/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+                },
+            });
+            if (res.status !== 200) {
+                alert("Something went wrong");
+            } else {
+                alert("User disabled successfully");
+                window.location.reload();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        setOpenDialog(false); 
+    };
+
+    const handleDialogOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+    };
+
     const handleSuccess = async (id) => {
         try {
             const decision = confirm("Are you sure you want to accept this application?");
@@ -121,11 +149,11 @@ const Application = () => {
             <Divider />
             <Paper sx={{ padding: 3, marginBottom: 3 }} elevation={1}>
                 <Container>
-                    <Grid2 container spacing={2} xs={6} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Grid2 container spacing={2} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Typography variant="h4" gutterBottom sx={{ color: '#1976d2' }}>
                             Application Details
                         </Typography>
-                        <Grid container spacing={2} xs={6}>
+                        <Grid container spacing={2}>
                             <Grid item><Typography><strong>Status:</strong>
                                 {presentStatus === 'Applied' ? <Typography variant="h7" gutterBottom sx={{ color: 'green' }}> New Application</Typography> : (
                                     presentStatus === 'Rejected' ? <Typography variant="h7" gutterBottom sx={{ color: 'red' }}> Rejected</Typography> : <Typography variant="h7" gutterBottom sx={{ color: 'orange' }}> {presentStatus}</Typography>
@@ -208,6 +236,7 @@ const Application = () => {
                             <Button 
                                 variant='contained'
                                 sx={{ margin: "10px 5px"}} 
+                                onClick={handleDialogOpen}
                             >Disable User</Button>
                         </Card>
                     )
@@ -217,6 +246,25 @@ const Application = () => {
                         <Remarks id={id} commentArray={commentsState} setComments={setComments} userName={firstName+" "+lastName} email={email} jobRole={jobId.role} status={presentStatus} setStatus={setPresentStatus} company={jobId.companyName} setSheduledDateTime = {setSheduledDateTime} sheduledDateTime={sheduledDateTime} phone={phone}/>
                     )
                 }
+                <Dialog
+                    open={openDialog}
+                    onClose={handleDialogClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Confirm Disable User"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to disable this user? This action cannot be undone.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleDialogClose}>Cancel</Button>
+                        <Button onClick={handleDisableUser} autoFocus>
+                            Disable
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Paper>
             <Paper sx={{ padding: 3, marginBottom: 3 }} elevation={1}>
                 {Array.isArray(sheduledDateTime) && sheduledDateTime.length > 0 ? (

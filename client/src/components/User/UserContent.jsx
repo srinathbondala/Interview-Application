@@ -19,7 +19,7 @@ const UserContent = ({ islogged }) => {
 
     useEffect(() => {
         // axios.get('http://localhost:8080/auth/top-company')
-        axios.get('http://localhost:8080/user/get-all-jobs',{
+        axios.get('http://localhost:8080/auth/get-all-jobs',{
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -27,7 +27,6 @@ const UserContent = ({ islogged }) => {
         })
             .then(response => {
                 setData(response.data);
-                console.log(response.data);
                 setFilteredData(response.data);
             })
             .catch(error => {

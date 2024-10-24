@@ -73,7 +73,6 @@ exports.getallJobs = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
-    
 };
 
 // Get Job by ID

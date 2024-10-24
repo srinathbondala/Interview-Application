@@ -55,6 +55,10 @@ const userSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'JobApplication',
         default: []
+    },
+    isDisabled: {
+        type: Boolean,
+        default: false
     }
 });
 
