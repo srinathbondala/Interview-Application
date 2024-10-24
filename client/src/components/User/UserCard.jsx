@@ -21,7 +21,7 @@ const UserCard = (props) => {
     //       { y: 0, opacity: 1, duration: 0.5, ease:'back.in', stagger: 0.25, delay: 0 });
     //   })
     const navigate = useNavigate();
-    const { jobId, companyName, role, technicalSkills, salaryRange, description,islogged } = props;
+    const { _id,jobId, companyName, role, technicalSkills, salaryRange, description,islogged } = props;
     function handleApply(jobId){
         if(checkToken()){
             navigate(`/user/apply/${jobId}`);
@@ -73,7 +73,7 @@ const UserCard = (props) => {
                     </Typography>
                 )}
             </CardContent>
-            <Button sx={{ m: 1 ,border:'1px solid'}} variant="outlined" color="primary"  onClick={() => handleApply(jobId)}>
+            <Button sx={{ m: 1 ,border:'1px solid'}} variant="outlined" color="primary"  onClick={() => handleApply(_id)}>
                 Apply
             </Button>
         </Card>
