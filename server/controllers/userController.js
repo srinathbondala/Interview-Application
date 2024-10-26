@@ -159,3 +159,14 @@ exports.getEducationDetails = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 }
+
+exports.getJobBySkills = async (req, res) => {
+    try {
+        const skills = req.query.skills ? req.query.skills.split(',') : [];
+        const jobs = await Job.find({ technicalSkills: { $in: skills } }).where('registrationEnded').gte(new Date().toISOString().split('T')[0]);
+        
+        res.status(200).json(jobs);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
