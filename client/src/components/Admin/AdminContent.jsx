@@ -25,6 +25,7 @@ const MainBody = () => {
             response => {
                 setData(response.data);
                 setFilteredData(response.data);
+                console.log(response.data);
             }
         ).catch(error => {
             setError('Failed to fetch data.');
@@ -78,7 +79,7 @@ const MainBody = () => {
                     {filteredData.map((item, index) => (
                         <Grid item xs={12} sm={6} md={6} key={index}>
                             {/* <Paper elevation={3}> */}
-                                <SimpleCard {...item._id} />
+                                <SimpleCard {...item} />
                             {/* </Paper> */}
                         </Grid>
                     ))}

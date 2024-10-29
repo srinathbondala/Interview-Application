@@ -30,7 +30,7 @@ const UserApplied = () => {
     }, [id, token]);
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 90 },
+        { field: 'firstName', headerName: 'User Name', width: 150 },
         { field: 'email', headerName: 'Email', width: 200 },
         { field: 'college', headerName: 'College', width: 150 },
         { field: 'grade', headerName: 'Grade', width: 100 },
@@ -38,10 +38,8 @@ const UserApplied = () => {
         { field: 'branch', headerName: 'Branch', width: 150 },
         { field: 'skills', headerName: 'Skills', width: 200 },
         { field: 'experience', headerName: 'Experience', width: 150 },
-        { field: 'achievements', headerName: 'Achievements', width: 200 },
         { field: 'status', headerName: 'Status', width: 100 },
         { field: 'appliedDate', headerName: 'Applied Date', width: 150 },
-        { field: 'resume', headerName: 'Resume', width: 150, renderCell: (params) => params.value ? 'Uploaded' : 'Not Uploaded' },
         { 
             field: 'view', 
             headerName: 'View', 
@@ -60,6 +58,7 @@ const UserApplied = () => {
 
     const rows = data.map((item, index) => ({
         id: item._id, 
+        firstName: item.userId?.firstName +" "+ item.userId?.lastName || 'N/A',
         email: item.userId?.email || 'N/A',
         college: item.userId?.acadamicDetailsKey?.education?.college || 'N/A',
         grade: item.userId?.acadamicDetailsKey?.education?.grade || 'N/A',
@@ -67,10 +66,8 @@ const UserApplied = () => {
         branch: item.userId?.acadamicDetailsKey?.education?.branch || 'N/A',
         skills: item.userId?.profactionalDetailsKey?.skills?.join(', ') || 'N/A',
         experience: item.userId?.profactionalDetailsKey?.experience || 'N/A',
-        achievements: item.userId?.profactionalDetailsKey?.achievements?.join(', ') || 'N/A',
         status: item.status || 'N/A',
         appliedDate: item.appliedDate ? new Date(item.appliedDate).toLocaleDateString() : 'N/A',
-        resume: item.resume || 'N/A',
     }));
 
     return (

@@ -14,12 +14,11 @@ import { DeleteOutlined } from '@mui/icons-material';
 import ApplicationsDialog from '../ApplicationsDialog';
 
 const SimpleCard = (props) => {
-    console.log(props);
     // useGSAP(() => {
     //     gsap.fromTo('.card', { y: '200', opacity: 0 },
     //       { y: 0, opacity: 1, duration: 0.5, ease:'back.in', stagger: 0.25, delay: 0 });
     //   },[]);
-    const { companyName, role, experience, technicalSkills, salaryRange, description, _id } = props;
+    const { companyName, role, experience, technicalSkills, salaryRange, description, _id } = props._id;
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleDialogOpen = () => {
@@ -40,7 +39,8 @@ const SimpleCard = (props) => {
                 }
                 action={
                     <IconButton>
-                        <DeleteOutlined sx={{ color: 'black' }} />
+                        {/* <DeleteOutlined sx={{ color: 'black' }} /> */}
+                        <Typography sx={{ color: 'black' , backgroundColor:'Background', borderRadius:'50%', padding:'8px', fontWeight:'bold'}}>{props.applicationCount}</Typography>
                     </IconButton>
                 }
                 title={

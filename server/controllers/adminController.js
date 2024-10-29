@@ -39,9 +39,44 @@ const getallJobs = async (req, res) => {
 };
 
 // Controller to get the top companies based on job postings
+// const getTopCompanies = async (req, res) => {
+//   try {
+//     const topCompanies = await Job.aggregate([
+//       {
+//         $group: {
+//           _id: {
+//             _id: "$_id",
+//             companyName: "$companyName",
+//             role: "$role",
+//             salaryRange: "$salaryRange",
+//             description: "$description",
+//             technicalSkills: "$technicalSkills",
+//             createdDate: "$createdDate",
+//           },
+//           totalJobs: { $sum: 1 }
+//         }
+//       },
+//       { $sort: { "_id.createdDate": 1 ,"_id.companyName": 1, "totalJobs": 1 } },
+//       // { $limit: 10 }
+//     ]);
+    
+//     res.status(200).json(topCompanies);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+
 const getTopCompanies = async (req, res) => {
   try {
     const topCompanies = await Job.aggregate([
+      {
+        $lookup: {
+          from: "jobapplications",
+          localField: "_id",
+          foreignField: "jobId",
+          as: "applications",
+        },
+      },
       {
         $group: {
           _id: {
@@ -51,15 +86,15 @@ const getTopCompanies = async (req, res) => {
             salaryRange: "$salaryRange",
             description: "$description",
             technicalSkills: "$technicalSkills",
-            createdDate: "$createdDate"
+            createdDate: "$createdDate",
           },
-          totalJobs: { $sum: 1 }
-        }
+          totalJobs: { $sum: 1 },
+          applicationCount: { $sum: { $size: "$applications" } },
+        },
       },
-      { $sort: { "_id.createdDate": 1 ,"_id.companyName": 1, "totalJobs": 1 } },
-      // { $limit: 10 }
+      { $sort: { "_id.createdDate": 1, "_id.companyName": 1, "totalJobs": 1 } },
     ]);
-    
+
     res.status(200).json(topCompanies);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -132,7 +167,7 @@ const getJobApplication = async (req, res) => {
       .select('-comments')
       .populate({
       path: 'userId',
-      select: 'name email -_id',
+      select: 'firstName lastName email -_id',
       populate: [
         {
           path: 'acadamicDetailsKey',
@@ -142,7 +177,7 @@ const getJobApplication = async (req, res) => {
         {
           path: 'profactionalDetailsKey',
           model: 'ProfessionalDetails',
-          select: 'experience skills achievements', 
+          select: 'experience skills', 
         }
       ]
     });
