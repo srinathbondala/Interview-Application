@@ -305,6 +305,24 @@ const addComment = async (req, res) => {
   }
 };
 
+const addSuggestion = async (req, res) => {
+  try {
+    const newSuggestion = {
+      timestamp: new Date(),
+      suggestion: req.body.suggestion
+    };
+
+    await JobApplication.findByIdAndUpdate(
+      req.params.id,
+      { $push: { suggestions: newSuggestion } }
+    );
+    res.status(200).json({newSuggestion});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
 const sendEmailToUser = async (req, res) => {
   try {
     const { email, subject, text } = req.body;
@@ -339,4 +357,4 @@ const disableUser = async (req, res) => {
   }
 }
 
-module.exports = { addJob, getallJobs, getTopCompanies, getAppliedJobs,deleteJob ,getNewApplications,orderedJobs, getActiveJobs, acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication,getUserDetailsByJobId, sendEmailToUser,sheduledDateTime ,disableUser};
+module.exports = { addJob, getallJobs, getTopCompanies, getAppliedJobs,deleteJob ,getNewApplications,orderedJobs, getActiveJobs, acceptApplication, rejectApplication, changeStatus, addComment, getJobApplication,getUserDetailsByJobId, sendEmailToUser,sheduledDateTime ,disableUser,addSuggestion};

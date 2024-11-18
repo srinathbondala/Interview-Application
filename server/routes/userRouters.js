@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile , getallJobs, getJobById, applyJob, getJobByUser, getEducationDetails, getJobBySkills} = require('../controllers/userController');
+const { getProfile, updateProfile , getallJobs, getJobById, applyJob, getJobByUser, getEducationDetails, getJobBySkills, getJobStatusDetails} = require('../controllers/userController');
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -14,4 +14,5 @@ router.post('/apply-job', applyJob);
 router.get('/get-applied-jobs', getJobByUser);
 router.get('/get-personal-details', getEducationDetails);
 router.get('/get-job-by-skills', getJobBySkills);
+router.get('/get-job-status-details/:jobId', getJobStatusDetails);
 module.exports = router;

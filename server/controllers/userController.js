@@ -170,3 +170,19 @@ exports.getJobBySkills = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+exports.getJobStatusDetails = async (req, res) => {
+    try {
+        const jobId = req.params.jobId;
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+        const jobApplication = await JobApplication.findOne({ userId, jobId }).select('suggestions status');
+        if (!jobApplication) {
+            return res.status(404).json({ error: 'Job application not found' });
+        }
+        res.status(200).json({jobApplication});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}

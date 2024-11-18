@@ -5,6 +5,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , status, setStatus, company, setSheduledDateTime,sheduledDateTime, phone}) => { 
     const [remarks, setRemarks] = useState(''); 
+    const [suggestion, setSuggestion] = useState('');
     const [open, setOpen] = useState(false);
     const [template, setTemplate] = useState('');
     const [dialogType, setDialogType] = useState('');
@@ -183,6 +184,36 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
         }
     };
 
+    const handleAddSugesstion = async () => {
+        try {
+            setSuggestion("");
+            const jwtToken = localStorage.getItem('jwtToken');
+            const response = await fetch(`http://localhost:8080/admin/add-suggestion/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({ suggestion: suggestion })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Suggstion added successfully: ', data);
+                // setComments([...commentArray, data.newComment]);
+                alert('Suggstion added successfully');
+            } else {
+                if (response.status === 401) {
+                    alert('Jwt expired. Please login again.');
+                    window.location.href = '/login';
+                }
+                console.error('Failed to add Suggstion');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     const handleSaveStatus = async () => {
         try {
             const jwtToken = localStorage.getItem('jwtToken');
@@ -287,6 +318,16 @@ const Remarks = ({ id, commentArray, setComments, userName, email, jobRole , sta
                 />
                 <Button variant="contained" color="primary" style={{ marginTop: "10px" }} onClick={handleAddRemark}>
                     Add Remark
+                </Button>
+                <br /> <br />
+                <textarea
+                    value={suggestion}
+                    onChange={(e) => setSuggestion(e.target.value)}
+                    placeholder="Add Sugesstion here..."
+                    style={{ width: "100%", padding: "8px" }}
+                />
+                <Button variant="contained" color="primary" style={{ marginTop: "10px" }} onClick={handleAddSugesstion}>
+                    Add Sugesstion
                 </Button>
             </div>
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg" sx={{ '& .MuiDialog-paper': { height: '90%', maxHeight: '90%' } }}>

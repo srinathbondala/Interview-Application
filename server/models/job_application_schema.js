@@ -33,6 +33,16 @@ const jobApplicationSchema = new Schema({
             required: true
         }
     }],
+    suggestions: [{
+        timestamp: {
+            type: Date,
+            default: Date.now
+        },
+        suggestion: {
+            type: String,
+            required: true
+        }
+    }],
     latestChangesBy: {
         type: Schema.Types.ObjectId,
         ref: 'User'

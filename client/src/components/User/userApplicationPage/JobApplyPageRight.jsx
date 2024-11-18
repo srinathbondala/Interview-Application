@@ -70,6 +70,8 @@ function JobApplyPageRight({ jobId }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [status, setStatus] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,6 +88,36 @@ function JobApplyPageRight({ jobId }) {
       });
     }
   }, [jobId]);
+
+  useEffect( () => {
+    const fetchJobStatusDetails = async () => {
+      const token = localStorage.getItem('jwtToken');
+      if (!token) {
+          alert('User authentication has expired. Please log in again.');
+          navigate('/login');
+          return;
+      }
+      
+      if (alreadyApplied) {
+          try {
+              const config = {
+                  headers: {
+                      Authorization: `Bearer ${token}`,
+                      'Content-Type': 'application/json',
+                  },
+              };
+              const response = await axios.get(`http://localhost:8080/user/get-job-status-details/${jobId}`, config);
+              console.log('Job status details:', response.data);
+              setStatus(response.data.jobApplication.status);
+              setSuggestions(response.data.jobApplication.suggestions);
+          } catch (err) {
+              console.error('Error fetching job status details:', err);
+          }
+      }
+  };
+
+  fetchJobStatusDetails();
+  }, [alreadyApplied]);
 
   const handleApplyJob = async () => {
     try {
@@ -138,9 +170,30 @@ function JobApplyPageRight({ jobId }) {
         ) : (
           <>
             {alreadyApplied ? (
-              <Typography variant="body1" align="center" sx={{ color: 'green' }} gutterBottom>
-                Already Applied
-              </Typography>
+              <Box>
+                <Typography variant="body1" align="center" sx={{ color: 'green' }} gutterBottom>
+                  Already Applied
+                </Typography>
+                <Typography variant="body2" align="center" sx={{ color: 'orange' }} gutterBottom>
+                  Status: {status}
+                </Typography>
+                {suggestions && suggestions.length > 0 && (
+                  <Box sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
+                    <Typography variant="body2" align="center" sx={{ color: 'red' }} gutterBottom>
+                      Suggestions:
+                    </Typography>
+                    <Box component="ul" sx={{ padding: 0, listStyleType: 'none', textAlign: 'center' }}>
+                      {suggestions.map((suggestion, index) => (
+                        <li key={index}>
+                          <Typography variant="body2" color="textSecondary">
+                            {index+1}. {suggestion.suggestion} - {new Date(suggestion.timestamp).toLocaleString()}
+                          </Typography>
+                        </li>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+              </Box>
             ) : (
               <ShowProfileCompletion />
             )}

@@ -73,8 +73,9 @@ body {
   }
 }
 .remarks{
-  background-color: burlywood;
+  background-color: rgb(240, 240, 240);
   width: 100%;
+  padding: 16px;
 }
 option{
   padding: 20px;
